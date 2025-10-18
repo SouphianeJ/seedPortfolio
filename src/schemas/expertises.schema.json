@@ -1,0 +1,46 @@
+{
+  "$id": "ExpertisesSchema",
+  "type": "object",
+  "properties": {
+    "expertiseName": { "type": "string", "title": "Nom de l'expertise" },
+    "level": {
+      "type": "integer",
+      "title": "Niveau",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "rolesPriority": {
+      "type": "array",
+      "title": "Rôles prioritaires",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Ingénierie pédagogique",
+          "Administrateur Moodle",
+          "Développeur web",
+          "Chef de projet"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 4,
+      "uniqueItems": true
+    },
+    "category": {
+      "type": "string",
+      "title": "Catégorie",
+      "enum": [
+        "Gestion de projet",
+        "Ingénierie pédago",
+        "Web/API",
+        "Data/IA",
+        "Plateforme"
+      ]
+    },
+    "lastUsed": {
+      "type": "string",
+      "format": "date",
+      "title": "Dernière utilisation"
+    }
+  },
+  "required": ["expertiseName", "level", "rolesPriority"]
+}

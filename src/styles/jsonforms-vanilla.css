@@ -1,0 +1,118 @@
+:root {
+  --jsf-main-bg-color: transparent;
+  --jsf-modest-bg-color: rgb(148 163 184 / 0.16);
+  --jsf-border-color: rgb(148 163 184 / 0.35);
+  --jsf-modest-bg-highlight-color: rgb(148 163 184 / 0.35);
+  --jsf-validation-color: #ef4444;
+  --jsf-main-fg-color: rgb(148 163 184);
+  --jsf-description-color: rgb(148 163 184 / 0.8);
+}
+
+.jsonforms-app {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.jsonforms-app .control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.jsonforms-app .control > label {
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.jsonforms-app .control > .input {
+  border: 1px solid var(--jsf-border-color);
+  border-radius: 0.5rem;
+  background: rgb(15 23 42 / 0.6);
+  color: #f8fafc;
+  padding: 0.5rem 0.75rem;
+}
+
+.jsonforms-app .control > .input-description {
+  font-size: 0.75rem;
+  color: var(--jsf-description-color);
+}
+
+.jsonforms-app .control > .validation {
+  font-size: 0.75rem;
+  color: var(--jsf-validation-color);
+}
+
+.jsonforms-app .horizontal-layout {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.jsonforms-app .horizontal-layout > * {
+  flex: 1 1 12rem;
+}
+
+.jsonforms-app .vertical-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.jsonforms-app .group-layout {
+  border: 1px solid var(--jsf-border-color);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: rgb(15 23 42 / 0.35);
+}
+
+.jsonforms-app .group-layout > legend {
+  font-weight: 600;
+  padding: 0 0.5rem;
+  color: #e2e8f0;
+}
+
+.jsonforms-app .array-table {
+  border-radius: 0.5rem;
+  border: 1px solid var(--jsf-border-color);
+  overflow: hidden;
+}
+
+.jsonforms-app table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.jsonforms-app table th,
+.jsonforms-app table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--jsf-border-color);
+  text-align: left;
+}
+
+.jsonforms-app table thead {
+  background: rgb(148 163 184 / 0.12);
+}
+
+.jsonforms-app button {
+  border-radius: 0.5rem;
+  font-weight: 600;
+  background: rgb(14 165 233 / 0.15);
+  color: #38bdf8;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.jsonforms-app button:hover {
+  background: rgb(14 165 233 / 0.25);
+}
+
+.jsonforms-app .array-table button {
+  margin-top: 0.5rem;
+}
+
+.jsonforms-app [hidden] {
+  display: none !important;
+}
