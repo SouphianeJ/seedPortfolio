@@ -70,8 +70,11 @@ src/
 | POST    | `/api/jobpositions`           | Création d'un poste                       |
 | GET     | `/api/jobpositions/[id]`      | Récupération d'un poste                   |
 | PUT     | `/api/jobpositions/[id]`      | Mise à jour partielle d'un poste          |
+| POST    | `/api/seed`                   | Remplit ou met à jour les données de base |
 
 Chaque réponse JSON sérialise `_id` en chaîne. Les routes POST/PUT retournent les documents mis à jour.
+
+Pour initialiser vos collections, effectuez un `POST` sur `/api/seed`. Le script effectue des remplacements idempotents (upsert) sur les trois collections en conservant les mêmes identifiants pour permettre des relations cohérentes.
 
 ## Ajouter un champ à un formulaire
 1. Modifiez le schéma JSON (`src/schemas/*.schema.json`) pour définir la propriété et son `title`.
