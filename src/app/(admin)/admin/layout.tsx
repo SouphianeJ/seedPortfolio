@@ -5,6 +5,7 @@ const NAV_ITEMS = [
   { href: "/admin/projects", label: "Projets" },
   { href: "/admin/expertises", label: "Expertises" },
   { href: "/admin/jobs", label: "Postes" },
+  { href: "/admin/seed", label: "Initialisation" },
 ];
 
 export default function AdminLayout({
