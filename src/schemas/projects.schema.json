@@ -17,7 +17,8 @@
         ]
       },
       "minItems": 1,
-      "uniqueItems": true
+      "uniqueItems": true,
+      "default": []
     },
     "thumbnailPic": { "type": "string", "title": "Vignette (URL)" },
     "shortDescription": { "type": "string", "title": "Résumé" }

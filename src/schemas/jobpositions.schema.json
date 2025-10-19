@@ -25,14 +25,17 @@
             "maximum": 5
           }
         },
-        "required": ["skillId", "minLevel", "priority"]
-      }
+        "required": ["skillId", "minLevel", "priority"],
+        "default": { "skillId": "", "minLevel": 1, "priority": 3 }
+      },
+      "default": []
     },
     "projects": {
       "type": "array",
       "title": "Projets associés",
-      "items": { "type": "string", "title": "Projet (ObjectId)" },
-      "uniqueItems": true
+      "items": { "type": "string", "title": "Projet (ObjectId)", "default": "" },
+      "uniqueItems": true,
+      "default": []
     }
   },
   "required": ["positionName"]

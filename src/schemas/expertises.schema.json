@@ -23,7 +23,8 @@
       },
       "minItems": 1,
       "maxItems": 4,
-      "uniqueItems": true
+      "uniqueItems": true,
+      "default": []
     },
     "category": {
       "type": "string",

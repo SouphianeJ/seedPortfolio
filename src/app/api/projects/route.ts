@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { projects } from "@/lib/mongodb";
 import { serializeProject } from "@/lib/serializers";
 import { createObjectId } from "@/lib/ids";
-import { BadRequestError, parseProjectCreate } from "./validators";
+import {
+  BadRequestError,
+  parseProjectCreate,
+} from "@/lib/parsers/projects";
 
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
@@ -21,7 +24,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
-    const payload = parseProjectCreate(body);
+    const payload = await parseProjectCreate(body);
 
     const collection = await projects();
     const document = { _id: createObjectId(), ...payload };
