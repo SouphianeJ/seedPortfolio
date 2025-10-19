@@ -7,7 +7,17 @@
       "label": "Priorisation",
       "elements": [
         { "type": "Control", "scope": "#/properties/level" },
-        { "type": "Control", "scope": "#/properties/rolesPriority" }
+        {
+          "type": "Control",
+          "scope": "#/properties/rolesPriority",
+          "options": {
+            "asyncOptions": {
+              "url": "/api/jobpositions",
+              "valuePath": "positionName",
+              "labelPath": "positionName"
+            }
+          }
+        }
       ]
     },
     { "type": "Control", "scope": "#/properties/category" },

@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { jobpositions } from "@/lib/mongodb";
 import { serializeJobPosition } from "@/lib/serializers";
 import { createObjectId } from "@/lib/ids";
-import { BadRequestError, parseJobCreate } from "./validators";
+import { BadRequestError } from "@/lib/parsers/objectid";
+import { parseJobPositionCreate } from "@/lib/parsers/jobpositions";
 
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
@@ -21,9 +22,13 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
-    const payload = parseJobCreate(body);
+    const payload = await parseJobPositionCreate(body);
 
     const collection = await jobpositions();
+    const existing = await collection.findOne({ positionName: payload.positionName });
+    if (existing) {
+      return errorResponse("Un poste avec cet intitulé existe déjà.", 409);
+    }
     const document = { _id: createObjectId(), ...payload };
     await collection.insertOne(document);
 

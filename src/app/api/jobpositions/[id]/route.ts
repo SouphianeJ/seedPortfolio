@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { jobpositions } from "@/lib/mongodb";
 import { serializeJobPosition } from "@/lib/serializers";
 import { isValidObjectId, toObjectId } from "@/lib/ids";
-import { BadRequestError, parseJobUpdate } from "../validators";
+import { BadRequestError } from "@/lib/parsers/objectid";
+import { parseJobPositionUpdate } from "@/lib/parsers/jobpositions";
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
 
@@ -43,8 +44,18 @@ export async function PUT(
 
   try {
     const body = (await request.json()) as Record<string, unknown>;
-    const payload = parseJobUpdate(body);
+    const payload = await parseJobPositionUpdate(body);
     const collection = await jobpositions();
+
+    if (payload.positionName) {
+      const duplicate = await collection.findOne({
+        positionName: payload.positionName,
+        _id: { $ne: toObjectId(id) },
+      });
+      if (duplicate) {
+        return errorResponse("Un autre poste possède déjà cet intitulé.", 409);
+      }
+    }
 
     const updatedJob = await collection.findOneAndUpdate(
       { _id: toObjectId(id) },

@@ -4,15 +4,9 @@ import type {
   SkillCategory,
   UpdateExpertisePayload,
 } from "@/lib/types";
-
-export class BadRequestError extends Error {}
-
-const ROLE_VALUES: RoleKey[] = [
-  "Ingénierie pédagogique",
-  "Administrateur Moodle",
-  "Développeur web",
-  "Chef de projet",
-];
+import { jobpositions } from "@/lib/mongodb";
+import { BadRequestError } from "@/lib/parsers/objectid";
+export { BadRequestError } from "@/lib/parsers/objectid";
 
 const CATEGORY_VALUES: SkillCategory[] = [
   "Gestion de projet",
@@ -22,59 +16,16 @@ const CATEGORY_VALUES: SkillCategory[] = [
   "Plateforme",
 ];
 
-export const parseExpertiseCreate = (
-  body: Record<string, unknown>,
-): CreateExpertisePayload => {
-  const expertiseName = getRequiredString(
-    body.expertiseName,
-    "Le nom de l'expertise est requis.",
-  );
-  const level = getRequiredLevel(body.level);
-  const rolesPriority = getRequiredRoles(body.rolesPriority);
-
-  const payload: CreateExpertisePayload = {
-    expertiseName,
-    level,
-    rolesPriority,
-  };
-
-  if (typeof body.category === "string" && CATEGORY_VALUES.includes(body.category as SkillCategory)) {
-    payload.category = body.category as SkillCategory;
+const getRoleSet = async (): Promise<Set<string>> => {
+  const collection = await jobpositions();
+  const cursor = collection.find({}, { projection: { positionName: 1 } });
+  const roles = new Set<string>();
+  for await (const document of cursor) {
+    if (document?.positionName) {
+      roles.add(document.positionName as string);
+    }
   }
-
-  if (typeof body.lastUsed === "string" && body.lastUsed.trim()) {
-    payload.lastUsed = body.lastUsed.trim();
-  }
-
-  return payload;
-};
-
-export const parseExpertiseUpdate = (
-  body: Record<string, unknown>,
-): UpdateExpertisePayload => {
-  const payload: UpdateExpertisePayload = {};
-
-  if ("expertiseName" in body) {
-    payload.expertiseName = getOptionalString(body.expertiseName, "expertiseName");
-  }
-
-  if ("level" in body) {
-    payload.level = getOptionalLevel(body.level);
-  }
-
-  if ("rolesPriority" in body) {
-    payload.rolesPriority = getOptionalRoles(body.rolesPriority);
-  }
-
-  if ("category" in body) {
-    payload.category = getOptionalCategory(body.category);
-  }
-
-  if ("lastUsed" in body) {
-    payload.lastUsed = getOptionalString(body.lastUsed, "lastUsed");
-  }
-
-  return payload;
+  return roles;
 };
 
 const getRequiredString = (value: unknown, message: string) => {
@@ -113,30 +64,38 @@ const getOptionalLevel = (value: unknown) => {
   return parsed as CreateExpertisePayload["level"];
 };
 
-const getRequiredRoles = (value: unknown) => {
-  if (!Array.isArray(value) || value.length === 0) {
-    throw new BadRequestError("Au moins un rôle est requis.");
-  }
-  const roles = value.filter((role): role is RoleKey =>
-    typeof role === "string" && ROLE_VALUES.includes(role as RoleKey),
-  );
-  if (roles.length === 0) {
-    throw new BadRequestError("Les rôles fournis sont invalides.");
-  }
-  return Array.from(new Set(roles));
-};
-
-const getOptionalRoles = (value: unknown) => {
+const parseRoles = (
+  value: unknown,
+  roles: Set<string>,
+  field: string,
+  { required }: { required: boolean },
+): RoleKey[] | undefined => {
   if (value == null) {
+    if (required) {
+      throw new BadRequestError(`Le champ ${field} est requis.`);
+    }
     return undefined;
   }
   if (!Array.isArray(value)) {
-    throw new BadRequestError("Le champ rolesPriority doit être un tableau.");
+    throw new BadRequestError(`Le champ ${field} doit être un tableau.`);
   }
-  const roles = value.filter((role): role is RoleKey =>
-    typeof role === "string" && ROLE_VALUES.includes(role as RoleKey),
-  );
-  return Array.from(new Set(roles));
+  if (required && value.length === 0) {
+    throw new BadRequestError(`Au moins un rôle est requis pour ${field}.`);
+  }
+  const seen = new Set<string>();
+  const parsed: RoleKey[] = [];
+  value.forEach((entry, index) => {
+    if (typeof entry !== "string" || !roles.has(entry)) {
+      throw new BadRequestError(
+        `Le rôle ${entry as string} (${field}[${index}]) est inconnu. Les rôles doivent exister dans JobPositions.`,
+      );
+    }
+    if (!seen.has(entry)) {
+      seen.add(entry);
+      parsed.push(entry as RoleKey);
+    }
+  });
+  return parsed;
 };
 
 const getOptionalCategory = (value: unknown) => {
@@ -150,4 +109,65 @@ const getOptionalCategory = (value: unknown) => {
     throw new BadRequestError("Catégorie inconnue.");
   }
   return value as SkillCategory;
+};
+
+export const parseExpertiseCreate = async (
+  body: Record<string, unknown>,
+): Promise<CreateExpertisePayload> => {
+  const expertiseName = getRequiredString(
+    body.expertiseName,
+    "Le nom de l'expertise est requis.",
+  );
+  const level = getRequiredLevel(body.level);
+  const roleSet = await getRoleSet();
+  const rolesPriority = parseRoles(body.rolesPriority, roleSet, "rolesPriority", {
+    required: true,
+  }) ?? [];
+
+  const payload: CreateExpertisePayload = {
+    expertiseName,
+    level,
+    rolesPriority,
+  };
+
+  if (typeof body.category === "string" && CATEGORY_VALUES.includes(body.category as SkillCategory)) {
+    payload.category = body.category as SkillCategory;
+  }
+
+  if (typeof body.lastUsed === "string" && body.lastUsed.trim()) {
+    payload.lastUsed = body.lastUsed.trim();
+  }
+
+  return payload;
+};
+
+export const parseExpertiseUpdate = async (
+  body: Record<string, unknown>,
+): Promise<UpdateExpertisePayload> => {
+  const payload: UpdateExpertisePayload = {};
+
+  if ("expertiseName" in body) {
+    payload.expertiseName = getOptionalString(body.expertiseName, "expertiseName");
+  }
+
+  if ("level" in body) {
+    payload.level = getOptionalLevel(body.level);
+  }
+
+  if ("rolesPriority" in body) {
+    const roleSet = await getRoleSet();
+    payload.rolesPriority = parseRoles(body.rolesPriority, roleSet, "rolesPriority", {
+      required: false,
+    });
+  }
+
+  if ("category" in body) {
+    payload.category = getOptionalCategory(body.category);
+  }
+
+  if ("lastUsed" in body) {
+    payload.lastUsed = getOptionalString(body.lastUsed, "lastUsed");
+  }
+
+  return payload;
 };

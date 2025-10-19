@@ -21,7 +21,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
-    const payload = parseExpertiseCreate(body);
+    const payload = await parseExpertiseCreate(body);
 
     const collection = await expertises();
     const document = { _id: createObjectId(), ...payload };

@@ -43,7 +43,7 @@ export async function PUT(
 
   try {
     const body = (await request.json()) as Record<string, unknown>;
-    const payload = parseExpertiseUpdate(body);
+    const payload = await parseExpertiseUpdate(body);
     const collection = await expertises();
 
     const updatedExpertise = await collection.findOneAndUpdate(

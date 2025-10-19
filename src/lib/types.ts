@@ -1,10 +1,6 @@
 import type { ObjectId } from "mongodb";
 
-export type RoleKey =
-  | "Ingénierie pédagogique"
-  | "Administrateur Moodle"
-  | "Développeur web"
-  | "Chef de projet";
+export type RoleKey = string;
 
 export type SkillCategory =
   | "Gestion de projet"
