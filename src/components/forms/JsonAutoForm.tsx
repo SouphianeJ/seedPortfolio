@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { JsonForms } from "@jsonforms/react";
 import { vanillaRenderers } from "@jsonforms/vanilla-renderers";
 import type { JsonSchema, UISchemaElement } from "@jsonforms/core";
 import SubmitBar from "./SubmitBar";
+import { asyncArraySelectRenderer, asyncStringSelectRenderer } from "./renderers";
 
 interface JsonAutoFormProps {
   schema: JsonSchema;
@@ -28,6 +29,10 @@ export const JsonAutoForm = ({
   );
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const renderers = useMemo(
+    () => [...vanillaRenderers, asyncStringSelectRenderer, asyncArraySelectRenderer],
+    [],
+  );
 
   useEffect(() => {
     setFormData((data as Record<string, unknown>) ?? {});
@@ -60,7 +65,7 @@ export const JsonAutoForm = ({
           schema={schema}
           uischema={uiSchema}
           data={formData}
-          renderers={vanillaRenderers}
+          renderers={renderers}
           onChange={handleChange}
         />
       </div>

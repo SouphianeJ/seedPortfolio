@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { projects } from "@/lib/mongodb";
 import { serializeProject } from "@/lib/serializers";
 import { isValidObjectId, toObjectId } from "@/lib/ids";
-import { BadRequestError, parseProjectUpdate } from "../validators";
+import { BadRequestError } from "@/lib/parsers/objectid";
+import { parseProjectUpdate } from "@/lib/parsers/projects";
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
 
@@ -43,7 +44,7 @@ export async function PUT(
 
   try {
     const body = (await request.json()) as Record<string, unknown>;
-    const payload = parseProjectUpdate(body);
+    const payload = await parseProjectUpdate(body);
     const collection = await projects();
 
     const updatedProject = await collection.findOneAndUpdate(
