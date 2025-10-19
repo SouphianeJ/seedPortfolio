@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { runSeed } from "@/lib/seed";
+import { runSeed } from "@/lib/seed-runner";
 
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
