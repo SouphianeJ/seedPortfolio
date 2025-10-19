@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import type { ControlElement, JsonSchema, RankedTester, RendererEntry } from "@jsonforms/core";
-import type { ControlProps } from "@jsonforms/core";
+import { type ChangeEvent, useEffect, useState } from "react";
+import type {
+  ControlElement,
+  ControlProps,
+  JsonFormsRendererRegistryEntry,
+  JsonSchema,
+  RankedTester,
+} from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
 
 interface AsyncOptionsConfig {
@@ -108,21 +113,40 @@ const renderErrors = (error?: string | null, formError?: string) => {
   );
 };
 
-const resolveLabel = (props: ControlProps) => {
-  if (props.label) {
-    return props.label;
-  }
-  const control = props.uischema as ControlElement;
-  const schema = props.schema as JsonSchema;
-  return control?.label ?? schema?.title ?? props.path;
-};
-
 const asyncConfigFromUi = (uischema: ControlElement | undefined): AsyncOptionsConfig | undefined => {
   if (!uischema || typeof uischema !== "object") {
     return undefined;
   }
   const options = uischema.options as { asyncOptions?: AsyncOptionsConfig } | undefined;
   return options?.asyncOptions;
+};
+
+type LabelValue = ControlProps["label"];
+
+const labelToString = (label: LabelValue | undefined): string | undefined => {
+  if (typeof label === "string") {
+    return label;
+  }
+  if (label && typeof label === "object" && "text" in label) {
+    const text = (label as { text?: unknown }).text;
+    return typeof text === "string" ? text : undefined;
+  }
+  return undefined;
+};
+
+const resolveLabel = (props: ControlProps): string => {
+  const direct = labelToString(props.label);
+  if (direct) {
+    return direct;
+  }
+  const control = props.uischema as ControlElement;
+  const schema = props.schema as JsonSchema;
+  const controlLabel = labelToString(control?.label as LabelValue);
+  if (controlLabel) {
+    return controlLabel;
+  }
+  const schemaTitle = typeof schema?.title === "string" ? schema.title : undefined;
+  return schemaTitle ?? props.path;
 };
 
 const isArrayOfStrings = (schema: JsonSchema | undefined): boolean => {
@@ -187,7 +211,7 @@ const AsyncArraySelect = (props: ControlProps) => {
   const value: string[] = Array.isArray(data) ? data.map((entry) => String(entry)) : [];
   const label = resolveLabel(props);
 
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const selected = Array.from(event.target.selectedOptions).map((option) => option.value);
     handleChange(path, selected);
   };
@@ -242,12 +266,12 @@ const stringTester: RankedTester = (uischema, schema) => {
   return isStringSchema(schema as JsonSchema) ? 5 : -1;
 };
 
-export const asyncArraySelectRenderer: RendererEntry = {
+export const asyncArraySelectRenderer: JsonFormsRendererRegistryEntry = {
   tester: arrayTester,
   renderer: withJsonFormsControlProps(AsyncArraySelect),
 };
 
-export const asyncStringSelectRenderer: RendererEntry = {
+export const asyncStringSelectRenderer: JsonFormsRendererRegistryEntry = {
   tester: stringTester,
   renderer: withJsonFormsControlProps(AsyncStringSelect),
 };

@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, type Collection, type Document, type Filter } from "mongodb";
 import { expertises, jobpositions, projects } from "@/lib/mongodb";
 import type {
   CreateJobPositionPayload,
@@ -38,16 +38,17 @@ const assertLevel = (value: unknown, field: string): 1 | 2 | 3 | 4 | 5 => {
   return parsed as 1 | 2 | 3 | 4 | 5;
 };
 
-const assertExistAll = async (
+const assertExistAll = async <T extends Document>(
   ids: ObjectId[] | undefined,
-  factory: typeof expertises,
+  factory: () => Promise<Collection<T>>,
   label: string,
 ) => {
   if (!ids?.length) {
     return;
   }
   const collection = await factory();
-  const count = await collection.countDocuments({ _id: { $in: ids } });
+  const filter: Filter<T> = { _id: { $in: ids } } as Filter<T>;
+  const count = await collection.countDocuments(filter);
   if (count !== ids.length) {
     throw new BadRequestError(`Certains ${label} référencés n'existent pas.`);
   }
