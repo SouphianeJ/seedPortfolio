@@ -8,8 +8,39 @@
       "type": "Group",
       "label": "Associations",
       "elements": [
-        { "type": "Control", "scope": "#/properties/requiredSkills" },
-        { "type": "Control", "scope": "#/properties/projects" }
+        {
+          "type": "Control",
+          "scope": "#/properties/requiredSkills",
+          "options": {
+            "detail": {
+              "type": "VerticalLayout",
+              "elements": [
+                {
+                  "type": "Control",
+                  "scope": "#/properties/requiredSkills/items/properties/skillId",
+                  "options": {
+                    "widget": "AsyncSelect",
+                    "fetchUrl": "/api/expertises",
+                    "labelPath": "expertiseName",
+                    "valuePath": "_id"
+                  }
+                },
+                { "type": "Control", "scope": "#/properties/requiredSkills/items/properties/minLevel" },
+                { "type": "Control", "scope": "#/properties/requiredSkills/items/properties/priority" }
+              ]
+            }
+          }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/projects",
+          "options": {
+            "widget": "AsyncMultiSelect",
+            "fetchUrl": "/api/projects",
+            "labelPath": "projectName",
+            "valuePath": "_id"
+          }
+        }
       ]
     }
   ]

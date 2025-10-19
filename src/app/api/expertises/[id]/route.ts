@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { expertises } from "@/lib/mongodb";
 import { serializeExpertise } from "@/lib/serializers";
 import { isValidObjectId, toObjectId } from "@/lib/ids";
-import { BadRequestError, parseExpertiseUpdate } from "../validators";
+import { BadRequestError } from "@/lib/parsers/objectid";
+import { parseExpertiseUpdate } from "../validators";
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
 
@@ -43,7 +44,7 @@ export async function PUT(
 
   try {
     const body = (await request.json()) as Record<string, unknown>;
-    const payload = parseExpertiseUpdate(body);
+    const payload = await parseExpertiseUpdate(body);
     const collection = await expertises();
 
     const updatedExpertise = await collection.findOneAndUpdate(

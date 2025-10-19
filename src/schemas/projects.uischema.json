@@ -7,7 +7,16 @@
       "label": "Métadonnées",
       "elements": [
         { "type": "Control", "scope": "#/properties/year" },
-        { "type": "Control", "scope": "#/properties/roles" }
+        {
+          "type": "Control",
+          "scope": "#/properties/roles",
+          "options": {
+            "widget": "AsyncMultiSelect",
+            "fetchUrl": "/api/jobpositions",
+            "labelPath": "positionName",
+            "valuePath": "positionName"
+          }
+        }
       ]
     },
     { "type": "Control", "scope": "#/properties/thumbnailPic" },

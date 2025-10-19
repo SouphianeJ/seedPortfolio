@@ -1,18 +1,10 @@
 import type {
   CreateExpertisePayload,
-  RoleKey,
   SkillCategory,
   UpdateExpertisePayload,
 } from "@/lib/types";
-
-export class BadRequestError extends Error {}
-
-const ROLE_VALUES: RoleKey[] = [
-  "Ingénierie pédagogique",
-  "Administrateur Moodle",
-  "Développeur web",
-  "Chef de projet",
-];
+import { jobpositions } from "@/lib/mongodb";
+import { BadRequestError } from "@/lib/parsers/objectid";
 
 const CATEGORY_VALUES: SkillCategory[] = [
   "Gestion de projet",
@@ -22,15 +14,51 @@ const CATEGORY_VALUES: SkillCategory[] = [
   "Plateforme",
 ];
 
-export const parseExpertiseCreate = (
+const getRoleSet = async (): Promise<Set<string>> => {
+  const collection = await jobpositions();
+  const cursor = collection.find({}, { projection: { positionName: 1 } });
+  const roles = new Set<string>();
+  for await (const doc of cursor) {
+    if (doc?.positionName) {
+      roles.add(doc.positionName);
+    }
+  }
+  return roles;
+};
+
+const filterRoles = (
+  value: unknown,
+  roles: Set<string>,
+  required: boolean,
+): CreateExpertisePayload["rolesPriority"] | undefined => {
+  if (value == null) {
+    if (required) {
+      throw new BadRequestError("Au moins un rôle est requis.");
+    }
+    return undefined;
+  }
+  if (!Array.isArray(value)) {
+    throw new BadRequestError("Le champ rolesPriority doit être un tableau.");
+  }
+  const filtered = value.filter((role): role is CreateExpertisePayload["rolesPriority"][number] =>
+    typeof role === "string" && roles.has(role),
+  );
+  if (required && filtered.length === 0) {
+    throw new BadRequestError("Les rôles fournis sont invalides.");
+  }
+  return Array.from(new Set(filtered));
+};
+
+export const parseExpertiseCreate = async (
   body: Record<string, unknown>,
-): CreateExpertisePayload => {
+): Promise<CreateExpertisePayload> => {
+  const roleSet = await getRoleSet();
   const expertiseName = getRequiredString(
     body.expertiseName,
     "Le nom de l'expertise est requis.",
   );
   const level = getRequiredLevel(body.level);
-  const rolesPriority = getRequiredRoles(body.rolesPriority);
+  const rolesPriority = filterRoles(body.rolesPriority, roleSet, true) as CreateExpertisePayload["rolesPriority"];
 
   const payload: CreateExpertisePayload = {
     expertiseName,
@@ -49,10 +77,11 @@ export const parseExpertiseCreate = (
   return payload;
 };
 
-export const parseExpertiseUpdate = (
+export const parseExpertiseUpdate = async (
   body: Record<string, unknown>,
-): UpdateExpertisePayload => {
+): Promise<UpdateExpertisePayload> => {
   const payload: UpdateExpertisePayload = {};
+  const roleSet = await getRoleSet();
 
   if ("expertiseName" in body) {
     payload.expertiseName = getOptionalString(body.expertiseName, "expertiseName");
@@ -63,7 +92,7 @@ export const parseExpertiseUpdate = (
   }
 
   if ("rolesPriority" in body) {
-    payload.rolesPriority = getOptionalRoles(body.rolesPriority);
+    payload.rolesPriority = filterRoles(body.rolesPriority, roleSet, false);
   }
 
   if ("category" in body) {
@@ -111,32 +140,6 @@ const getOptionalLevel = (value: unknown) => {
     throw new BadRequestError("Le niveau doit être compris entre 1 et 5.");
   }
   return parsed as CreateExpertisePayload["level"];
-};
-
-const getRequiredRoles = (value: unknown) => {
-  if (!Array.isArray(value) || value.length === 0) {
-    throw new BadRequestError("Au moins un rôle est requis.");
-  }
-  const roles = value.filter((role): role is RoleKey =>
-    typeof role === "string" && ROLE_VALUES.includes(role as RoleKey),
-  );
-  if (roles.length === 0) {
-    throw new BadRequestError("Les rôles fournis sont invalides.");
-  }
-  return Array.from(new Set(roles));
-};
-
-const getOptionalRoles = (value: unknown) => {
-  if (value == null) {
-    return undefined;
-  }
-  if (!Array.isArray(value)) {
-    throw new BadRequestError("Le champ rolesPriority doit être un tableau.");
-  }
-  const roles = value.filter((role): role is RoleKey =>
-    typeof role === "string" && ROLE_VALUES.includes(role as RoleKey),
-  );
-  return Array.from(new Set(roles));
 };
 
 const getOptionalCategory = (value: unknown) => {
