@@ -18,21 +18,25 @@ const toObjectId = (id: string | ObjectId): ObjectId => {
   return new ObjectId(id);
 };
 
-const stripUndefined = <T extends Record<string, any>>(obj: T): T => {
-  const out: Record<string, any> = {};
+const stripUndefined = <T extends Record<string, unknown>>(obj: T): T => {
+  const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
     if (value === undefined) continue;
     if (Array.isArray(value)) {
-      out[key] = value.map((entry) => (entry && typeof entry === "object" ? stripUndefined(entry as any) : entry));
+      result[key] = value.map((entry) =>
+        entry && typeof entry === "object" && !(entry instanceof ObjectId)
+          ? stripUndefined(entry as Record<string, unknown>)
+          : entry,
+      );
       continue;
     }
     if (value && typeof value === "object" && !(value instanceof ObjectId)) {
-      out[key] = stripUndefined(value as any);
+      result[key] = stripUndefined(value as Record<string, unknown>);
       continue;
     }
-    out[key] = value;
+    result[key] = value;
   }
-  return out as T;
+  return result as T;
 };
 
 const mapProjectSeed = (seed: SeedProject) =>
@@ -185,7 +189,7 @@ export const runSeed = async (opts: { mode?: SeedMode } = {}) => {
       projects: { inserted: projectInsert.insertedCount },
       expertises: { inserted: expertiseInsert.insertedCount },
       jobpositions: { inserted: jobInsert.insertedCount },
-    } as const;
+    };
   }
 
   const [projectResult, expertiseResult, jobResult] = await Promise.all([
@@ -226,5 +230,5 @@ export const runSeed = async (opts: { mode?: SeedMode } = {}) => {
     projects: summarize(projectResult),
     expertises: summarize(expertiseResult),
     jobpositions: summarize(jobResult),
-  } as const;
+  };
 };
