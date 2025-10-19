@@ -1,5 +1,5 @@
 import { ObjectId, type Collection, type Document, type Filter } from "mongodb";
-import { expertises, jobpositions, projects } from "@/lib/mongodb";
+import { expertises, projects } from "@/lib/mongodb";
 import type {
   CreateJobPositionPayload,
   UpdateJobPositionPayload,
@@ -10,24 +10,15 @@ import {
   toObjectIdArray,
 } from "@/lib/parsers/objectid";
 
-const getRoleSet = async (): Promise<Set<string>> => {
-  const collection = await jobpositions();
-  const cursor = collection.find({}, { projection: { positionName: 1 } });
-  const roles = new Set<string>();
-  for await (const document of cursor) {
-    if (document?.positionName) {
-      roles.add(document.positionName as string);
-    }
+const getRequiredString = (value: unknown, field: string): string => {
+  if (typeof value !== "string") {
+    throw new BadRequestError(`Le champ ${field} est requis.`);
   }
-  return roles;
-};
-
-const assertEnum = (value: unknown, roles: Set<string>, field: string) => {
-  if (typeof value !== "string" || !roles.has(value)) {
-    throw new BadRequestError(
-      `Le champ ${field} doit être l'un des rôles existants: ${Array.from(roles).join(" | ")}.`,
-    );
+  const trimmed = value.trim();
+  if (!trimmed) {
+    throw new BadRequestError(`Le champ ${field} ne peut pas être vide.`);
   }
+  return trimmed;
 };
 
 const assertLevel = (value: unknown, field: string): 1 | 2 | 3 | 4 | 5 => {
@@ -57,9 +48,7 @@ const assertExistAll = async <T extends Document>(
 export const parseJobPositionCreate = async (
   body: Record<string, unknown>,
 ): Promise<CreateJobPositionPayload> => {
-  const roles = await getRoleSet();
-  const positionName = body.positionName;
-  assertEnum(positionName, roles, "positionName");
+  const positionName = getRequiredString(body.positionName, "positionName");
 
   const thumbnailPic =
     typeof body.thumbnailPic === "string" && body.thumbnailPic.trim()
@@ -93,7 +82,7 @@ export const parseJobPositionCreate = async (
   await assertExistAll(projectIds, projects, "projects");
 
   return {
-    positionName: positionName as string,
+    positionName,
     requiredSkills,
     projects: projectIds,
     thumbnailPic,
@@ -105,19 +94,17 @@ export const parseJobPositionUpdate = async (
   body: Record<string, unknown>,
 ): Promise<UpdateJobPositionPayload> => {
   const payload: UpdateJobPositionPayload = {};
-  const roles = await getRoleSet();
 
   if ("positionName" in body) {
-    assertEnum(body.positionName, roles, "positionName");
-    payload.positionName = body.positionName as string;
+    payload.positionName = getRequiredString(body.positionName, "positionName");
   }
 
   if ("thumbnailPic" in body && typeof body.thumbnailPic === "string") {
-    payload.thumbnailPic = body.thumbnailPic.trim();
+    payload.thumbnailPic = body.thumbnailPic.trim() || undefined;
   }
 
   if ("subtitle" in body && typeof body.subtitle === "string") {
-    payload.subtitle = body.subtitle.trim();
+    payload.subtitle = body.subtitle.trim() || undefined;
   }
 
   if ("requiredSkills" in body) {

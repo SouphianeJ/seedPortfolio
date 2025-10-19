@@ -12,15 +12,7 @@
     "rolesPriority": {
       "type": "array",
       "title": "Rôles prioritaires",
-      "items": {
-        "type": "string",
-        "enum": [
-          "Ingénierie pédagogique",
-          "Administrateur Moodle",
-          "Développeur web",
-          "Chef de projet"
-        ]
-      },
+      "items": { "type": "string" },
       "minItems": 1,
       "maxItems": 4,
       "uniqueItems": true,

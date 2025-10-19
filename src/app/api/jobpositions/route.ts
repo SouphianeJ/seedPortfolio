@@ -25,6 +25,10 @@ export async function POST(request: Request) {
     const payload = await parseJobPositionCreate(body);
 
     const collection = await jobpositions();
+    const existing = await collection.findOne({ positionName: payload.positionName });
+    if (existing) {
+      return errorResponse("Un poste avec cet intitulé existe déjà.", 409);
+    }
     const document = { _id: createObjectId(), ...payload };
     await collection.insertOne(document);
 

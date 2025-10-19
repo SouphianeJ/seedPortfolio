@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { JsonForms } from "@jsonforms/react";
-import { vanillaRenderers } from "@jsonforms/vanilla-renderers";
+import { vanillaRenderers, vanillaCells } from "@jsonforms/vanilla-renderers";
 import type { JsonSchema, UISchemaElement } from "@jsonforms/core";
 import SubmitBar from "./SubmitBar";
 import { asyncArraySelectRenderer, asyncStringSelectRenderer } from "./renderers";
@@ -66,6 +66,7 @@ export const JsonAutoForm = ({
           uischema={uiSchema}
           data={formData}
           renderers={renderers}
+          cells={vanillaCells}
           onChange={handleChange}
         />
       </div>

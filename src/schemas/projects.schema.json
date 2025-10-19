@@ -7,15 +7,7 @@
     "roles": {
       "type": "array",
       "title": "Rôles",
-      "items": {
-        "type": "string",
-        "enum": [
-          "Ingénierie pédagogique",
-          "Administrateur Moodle",
-          "Développeur web",
-          "Chef de projet"
-        ]
-      },
+      "items": { "type": "string" },
       "minItems": 1,
       "uniqueItems": true,
       "default": []
