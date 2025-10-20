@@ -1,7 +1,5 @@
 import type { ObjectId } from "mongodb";
 
-export type RoleKey = string;
-
 export type SkillCategory =
   | "Gestion de projet"
   | "Ingénierie pédago"
@@ -13,7 +11,7 @@ export interface ProjectDoc {
   _id: ObjectId;
   projectName: string;
   year: number;
-  roles: RoleKey[];
+  roles: ObjectId[];
   thumbnailPic?: string;
   shortDescription?: string;
 }
@@ -22,7 +20,7 @@ export interface ExpertiseDoc {
   _id: ObjectId;
   expertiseName: string;
   level: 1 | 2 | 3 | 4 | 5;
-  rolesPriority: RoleKey[];
+  rolesPriority: ObjectId[];
   category?: SkillCategory;
   lastUsed?: string;
 }
@@ -40,25 +38,80 @@ export interface JobPositionDoc {
   subtitle?: string;
 }
 
-export type CreateProjectPayload = Pick<
-  ProjectDoc,
-  "projectName" | "year" | "roles" | "thumbnailPic" | "shortDescription"
->;
+export interface CreateProjectPayload {
+  projectName: string;
+  year: number;
+  roles: string[];
+  thumbnailPic?: string;
+  shortDescription?: string;
+}
 
-export type UpdateProjectPayload = Partial<CreateProjectPayload>;
+export interface UpdateProjectPayload {
+  projectName?: string;
+  year?: number;
+  roles?: string[];
+  thumbnailPic?: string;
+  shortDescription?: string;
+}
 
-export type CreateExpertisePayload = Pick<
-  ExpertiseDoc,
-  "expertiseName" | "level" | "rolesPriority" | "category" | "lastUsed"
->;
+export interface CreateExpertisePayload {
+  expertiseName: string;
+  level: 1 | 2 | 3 | 4 | 5;
+  rolesPriority: string[];
+  category?: SkillCategory;
+  lastUsed?: string;
+}
 
-export type UpdateExpertisePayload = Partial<CreateExpertisePayload>;
+export interface UpdateExpertisePayload {
+  expertiseName?: string;
+  level?: 1 | 2 | 3 | 4 | 5;
+  rolesPriority?: string[];
+  category?: SkillCategory;
+  lastUsed?: string;
+}
 
-export type CreateJobPositionPayload = Pick<
-  JobPositionDoc,
-  "positionName" | "requiredSkills" | "projects" | "thumbnailPic" | "subtitle"
->;
+export interface CreateJobPositionPayload {
+  positionName: string;
+  requiredSkills?: {
+    skillId: string;
+    minLevel: 1 | 2 | 3 | 4 | 5;
+    priority: 1 | 2 | 3 | 4 | 5;
+  }[];
+  projects?: string[];
+  thumbnailPic?: string;
+  subtitle?: string;
+}
 
-export type UpdateJobPositionPayload = Partial<CreateJobPositionPayload>;
+export interface UpdateJobPositionPayload {
+  positionName?: string;
+  requiredSkills?: {
+    skillId: string;
+    minLevel: 1 | 2 | 3 | 4 | 5;
+    priority: 1 | 2 | 3 | 4 | 5;
+  }[];
+  projects?: string[];
+  thumbnailPic?: string;
+  subtitle?: string;
+}
 
 export type WithStringId<T> = Omit<T, "_id"> & { _id: string };
+
+export type SerializedProject = Omit<WithStringId<ProjectDoc>, "roles"> & {
+  roles: string[];
+};
+
+export type SerializedExpertise = Omit<WithStringId<ExpertiseDoc>, "rolesPriority"> & {
+  rolesPriority: string[];
+};
+
+export type SerializedJobPosition = Omit<
+  WithStringId<JobPositionDoc>,
+  "requiredSkills" | "projects"
+> & {
+  requiredSkills?: {
+    skillId: string;
+    minLevel: 1 | 2 | 3 | 4 | 5;
+    priority: 1 | 2 | 3 | 4 | 5;
+  }[];
+  projects?: string[];
+};

@@ -16,7 +16,7 @@ export default function NewExpertisePage() {
   const router = useRouter();
 
   const handleSubmit = async (data: Record<string, unknown>) => {
-    await createExpertise(data as CreateExpertisePayload);
+    await createExpertise(data as unknown as CreateExpertisePayload);
     router.push("/admin/expertises");
   };
 

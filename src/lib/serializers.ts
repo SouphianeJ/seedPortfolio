@@ -3,6 +3,9 @@ import type {
   ExpertiseDoc,
   JobPositionDoc,
   ProjectDoc,
+  SerializedExpertise,
+  SerializedJobPosition,
+  SerializedProject,
   WithStringId,
 } from "@/lib/types";
 
@@ -16,24 +19,22 @@ const withStringId = <T extends { _id: ObjectId }>(
   };
 };
 
-export const serializeProject = (
-  project: ProjectDoc,
-): WithStringId<ProjectDoc> => withStringId(project);
+export const serializeProject = (project: ProjectDoc): SerializedProject => {
+  const base = withStringId(project);
+  return {
+    ...base,
+    roles: project.roles?.map((roleId) => roleId.toString()) ?? [],
+  };
+};
 
 export const serializeExpertise = (
   expertise: ExpertiseDoc,
-): WithStringId<ExpertiseDoc> => withStringId(expertise);
-
-export type SerializedJobPosition = Omit<
-  WithStringId<JobPositionDoc>,
-  "requiredSkills" | "projects"
-> & {
-  requiredSkills?: {
-    skillId: string;
-    minLevel: 1 | 2 | 3 | 4 | 5;
-    priority: 1 | 2 | 3 | 4 | 5;
-  }[];
-  projects?: string[];
+): SerializedExpertise => {
+  const base = withStringId(expertise);
+  return {
+    ...base,
+    rolesPriority: expertise.rolesPriority?.map((roleId) => roleId.toString()) ?? [],
+  };
 };
 
 export const serializeJobPosition = (job: JobPositionDoc): SerializedJobPosition => {

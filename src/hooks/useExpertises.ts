@@ -4,15 +4,14 @@ import useSWR, { mutate } from "swr";
 import { fetcher, jsonFetch } from "@/lib/fetcher";
 import type {
   CreateExpertisePayload,
-  ExpertiseDoc,
+  SerializedExpertise,
   UpdateExpertisePayload,
-  WithStringId,
 } from "@/lib/types";
 
 const COLLECTION_KEY = "/api/expertises";
 
 export const useExpertises = () => {
-  const { data, error, isLoading } = useSWR<WithStringId<ExpertiseDoc>[]>(
+  const { data, error, isLoading } = useSWR<SerializedExpertise[]>(
     COLLECTION_KEY,
     fetcher,
   );
@@ -26,14 +25,14 @@ export const useExpertises = () => {
 
 export const useExpertise = (id: string | null) => {
   const shouldFetch = Boolean(id);
-  return useSWR<WithStringId<ExpertiseDoc>>(
+  return useSWR<SerializedExpertise>(
     shouldFetch ? `${COLLECTION_KEY}/${id}` : null,
     fetcher,
   );
 };
 
 export const createExpertise = async (payload: CreateExpertisePayload) => {
-  const document = await jsonFetch<WithStringId<ExpertiseDoc>>(COLLECTION_KEY, {
+  const document = await jsonFetch<SerializedExpertise>(COLLECTION_KEY, {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -45,7 +44,7 @@ export const updateExpertise = async (
   id: string,
   payload: UpdateExpertisePayload,
 ) => {
-  const document = await jsonFetch<WithStringId<ExpertiseDoc>>(
+  const document = await jsonFetch<SerializedExpertise>(
     `${COLLECTION_KEY}/${id}`,
     {
       method: "PUT",

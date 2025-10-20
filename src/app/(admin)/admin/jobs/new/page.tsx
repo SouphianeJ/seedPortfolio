@@ -16,7 +16,7 @@ export default function NewJobPage() {
   const router = useRouter();
 
   const handleSubmit = async (data: Record<string, unknown>) => {
-    await createJob(data as CreateJobPositionPayload);
+    await createJob(data as unknown as CreateJobPositionPayload);
     router.push("/admin/jobs");
   };
 

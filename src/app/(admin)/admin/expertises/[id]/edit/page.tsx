@@ -34,7 +34,7 @@ export default function EditExpertisePage() {
     if (!id) {
       throw new Error("Identifiant manquant.");
     }
-    await updateExpertise(id, formData as UpdateExpertisePayload);
+    await updateExpertise(id, formData as unknown as UpdateExpertisePayload);
     router.push("/admin/expertises");
   };
 

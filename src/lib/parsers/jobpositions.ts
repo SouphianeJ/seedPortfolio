@@ -1,9 +1,6 @@
 import { ObjectId, type Collection, type Document, type Filter } from "mongodb";
 import { expertises, projects } from "@/lib/mongodb";
-import type {
-  CreateJobPositionPayload,
-  UpdateJobPositionPayload,
-} from "@/lib/types";
+import type { JobPositionDoc } from "@/lib/types";
 import {
   BadRequestError,
   toObjectId,
@@ -47,7 +44,7 @@ const assertExistAll = async <T extends Document>(
 
 export const parseJobPositionCreate = async (
   body: Record<string, unknown>,
-): Promise<CreateJobPositionPayload> => {
+): Promise<Omit<JobPositionDoc, "_id">> => {
   const positionName = getRequiredString(body.positionName, "positionName");
 
   const thumbnailPic =
@@ -58,7 +55,7 @@ export const parseJobPositionCreate = async (
   const subtitle =
     typeof body.subtitle === "string" && body.subtitle.trim() ? body.subtitle.trim() : undefined;
 
-  let requiredSkills: CreateJobPositionPayload["requiredSkills"];
+  let requiredSkills: JobPositionDoc["requiredSkills"];
   if (Array.isArray(body.requiredSkills)) {
     requiredSkills = body.requiredSkills.map((entry, index) => {
       if (typeof entry !== "object" || entry == null) {
@@ -92,8 +89,8 @@ export const parseJobPositionCreate = async (
 
 export const parseJobPositionUpdate = async (
   body: Record<string, unknown>,
-): Promise<UpdateJobPositionPayload> => {
-  const payload: UpdateJobPositionPayload = {};
+): Promise<Partial<Omit<JobPositionDoc, "_id">>> => {
+  const payload: Partial<Omit<JobPositionDoc, "_id">> = {};
 
   if ("positionName" in body) {
     payload.positionName = getRequiredString(body.positionName, "positionName");

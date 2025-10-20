@@ -13,7 +13,7 @@
           "options": {
             "asyncOptions": {
               "url": "/api/jobpositions",
-              "valuePath": "positionName",
+              "valuePath": "_id",
               "labelPath": "positionName"
             }
           }

@@ -34,7 +34,7 @@ export default function EditProjectPage() {
     if (!id) {
       throw new Error("Identifiant manquant.");
     }
-    await updateProject(id, formData as UpdateProjectPayload);
+    await updateProject(id, formData as unknown as UpdateProjectPayload);
     router.push("/admin/projects");
   };
 

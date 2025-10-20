@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
-import type { JobPositionDoc, WithStringId } from "@/lib/types";
+import type { SerializedJobPosition } from "@/lib/types";
 
 interface JobRowProps {
-  job: WithStringId<JobPositionDoc>;
+  job: SerializedJobPosition;
 }
 
 const formatCount = (items?: unknown[]) => (items ? items.length : 0);

@@ -4,8 +4,14 @@ import type { ExpertiseDoc, JobPositionDoc, ProjectDoc } from "@/lib/types";
  *  Dans les seeds: string pour _id et pour les refs (convertis dans les mappers).
  *  lastUsed reste string (format YYYY-MM-DD) conformément aux types + JSON Schema.
  */
-export type SeedProject = Omit<ProjectDoc, "_id"> & { _id: string };
-export type SeedExpertise = Omit<ExpertiseDoc, "_id"> & { _id: string };
+export type SeedProject = Omit<ProjectDoc, "_id" | "roles"> & {
+  _id: string;
+  roles: string[];
+};
+export type SeedExpertise = Omit<ExpertiseDoc, "_id" | "rolesPriority"> & {
+  _id: string;
+  rolesPriority: string[];
+};
 export type SeedJobPosition = Omit<JobPositionDoc, "_id" | "requiredSkills" | "projects"> & {
   _id: string;
   positionName: string;
@@ -23,7 +29,7 @@ export const projectSeeds: SeedProject[] = [
     _id: "66f8a0c5e1a1d2f3a4b5c6d1",
     projectName: "Synergy Studio LMS",
     year: 2024,
-    roles: ["Ingénierie pédagogique", "Administrateur Moodle", "Chef de projet"],
+    roles: ["66f8a0c5e1a1d2f3a4b5c6f1", "66f8a0c5e1a1d2f3a4b5c6f2", "66f8a0c5e1a1d2f3a4b5c6f4"],
     thumbnailPic: "/thumbs/synergy-studio.png",
     shortDescription:
       "Refonte d'une plateforme Moodle avec une charte unifiée et des parcours adaptatifs.",
@@ -32,7 +38,7 @@ export const projectSeeds: SeedProject[] = [
     _id: "66f8a0c5e1a1d2f3a4b5c6d2",
     projectName: "Campus Connect",
     year: 2023,
-    roles: ["Administrateur Moodle", "Développeur web"],
+    roles: ["66f8a0c5e1a1d2f3a4b5c6f2", "66f8a0c5e1a1d2f3a4b5c6f3"],
     thumbnailPic: "/thumbs/campus-connect.png",
     shortDescription:
       "Industrialisation des déploiements Moodle et automatisation de l'onboarding des formateurs.",
@@ -41,7 +47,7 @@ export const projectSeeds: SeedProject[] = [
     _id: "66f8a0c5e1a1d2f3a4b5c6d3",
     projectName: "Data Navigator",
     year: 2022,
-    roles: ["Développeur web", "Chef de projet"],
+    roles: ["66f8a0c5e1a1d2f3a4b5c6f3", "66f8a0c5e1a1d2f3a4b5c6f4"],
     thumbnailPic: "/thumbs/data-navigator.png",
     shortDescription:
       "Catalogue de données pédagogiques avec tableaux de bord pour suivre la progression des apprenants.",
@@ -54,7 +60,11 @@ export const expertiseSeeds: SeedExpertise[] = [
     _id: "66f8a0c5e1a1d2f3a4b5c6e1",
     expertiseName: "Design pédagogique avancé",
     level: 5,
-    rolesPriority: ["Ingénierie pédagogique", "Chef de projet", "Administrateur Moodle"],
+    rolesPriority: [
+      "66f8a0c5e1a1d2f3a4b5c6f1",
+      "66f8a0c5e1a1d2f3a4b5c6f4",
+      "66f8a0c5e1a1d2f3a4b5c6f2",
+    ],
     category: "Ingénierie pédago",
     lastUsed: "2024-12-01",
   },
@@ -62,7 +72,11 @@ export const expertiseSeeds: SeedExpertise[] = [
     _id: "66f8a0c5e1a1d2f3a4b5c6e2",
     expertiseName: "Administration Moodle",
     level: 4,
-    rolesPriority: ["Administrateur Moodle", "Ingénierie pédagogique", "Chef de projet"],
+    rolesPriority: [
+      "66f8a0c5e1a1d2f3a4b5c6f2",
+      "66f8a0c5e1a1d2f3a4b5c6f1",
+      "66f8a0c5e1a1d2f3a4b5c6f4",
+    ],
     category: "Plateforme",
     lastUsed: "2024-11-15",
   },
@@ -70,7 +84,11 @@ export const expertiseSeeds: SeedExpertise[] = [
     _id: "66f8a0c5e1a1d2f3a4b5c6e3",
     expertiseName: "Développement web full-stack",
     level: 5,
-    rolesPriority: ["Développeur web", "Chef de projet", "Administrateur Moodle"],
+    rolesPriority: [
+      "66f8a0c5e1a1d2f3a4b5c6f3",
+      "66f8a0c5e1a1d2f3a4b5c6f4",
+      "66f8a0c5e1a1d2f3a4b5c6f2",
+    ],
     category: "Web/API",
     lastUsed: "2024-10-03",
   },
@@ -78,7 +96,7 @@ export const expertiseSeeds: SeedExpertise[] = [
     _id: "66f8a0c5e1a1d2f3a4b5c6e4",
     expertiseName: "Data storytelling",
     level: 3,
-    rolesPriority: ["Développeur web", "Chef de projet"],
+    rolesPriority: ["66f8a0c5e1a1d2f3a4b5c6f3", "66f8a0c5e1a1d2f3a4b5c6f4"],
     category: "Data/IA",
     lastUsed: "2024-09-20",
   },

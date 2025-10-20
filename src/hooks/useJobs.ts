@@ -4,15 +4,14 @@ import useSWR, { mutate } from "swr";
 import { fetcher, jsonFetch } from "@/lib/fetcher";
 import type {
   CreateJobPositionPayload,
-  JobPositionDoc,
+  SerializedJobPosition,
   UpdateJobPositionPayload,
-  WithStringId,
 } from "@/lib/types";
 
 const COLLECTION_KEY = "/api/jobpositions";
 
 export const useJobs = () => {
-  const { data, error, isLoading } = useSWR<WithStringId<JobPositionDoc>[]>(
+  const { data, error, isLoading } = useSWR<SerializedJobPosition[]>(
     COLLECTION_KEY,
     fetcher,
   );
@@ -26,14 +25,14 @@ export const useJobs = () => {
 
 export const useJob = (id: string | null) => {
   const shouldFetch = Boolean(id);
-  return useSWR<WithStringId<JobPositionDoc>>(
+  return useSWR<SerializedJobPosition>(
     shouldFetch ? `${COLLECTION_KEY}/${id}` : null,
     fetcher,
   );
 };
 
 export const createJob = async (payload: CreateJobPositionPayload) => {
-  const document = await jsonFetch<WithStringId<JobPositionDoc>>(COLLECTION_KEY, {
+  const document = await jsonFetch<SerializedJobPosition>(COLLECTION_KEY, {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -42,7 +41,7 @@ export const createJob = async (payload: CreateJobPositionPayload) => {
 };
 
 export const updateJob = async (id: string, payload: UpdateJobPositionPayload) => {
-  const document = await jsonFetch<WithStringId<JobPositionDoc>>(
+  const document = await jsonFetch<SerializedJobPosition>(
     `${COLLECTION_KEY}/${id}`,
     {
       method: "PUT",

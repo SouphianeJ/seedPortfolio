@@ -16,7 +16,7 @@ export default function NewProjectPage() {
   const router = useRouter();
 
   const handleSubmit = async (data: Record<string, unknown>) => {
-    await createProject(data as CreateProjectPayload);
+    await createProject(data as unknown as CreateProjectPayload);
     router.push("/admin/projects");
   };
 

@@ -1,11 +1,10 @@
 import type {
   CreateExpertisePayload,
-  RoleKey,
+  ExpertiseDoc,
   SkillCategory,
-  UpdateExpertisePayload,
 } from "@/lib/types";
 import { jobpositions } from "@/lib/mongodb";
-import { BadRequestError } from "@/lib/parsers/objectid";
+import { BadRequestError, toObjectIdArray } from "@/lib/parsers/objectid";
 export { BadRequestError } from "@/lib/parsers/objectid";
 
 const CATEGORY_VALUES: SkillCategory[] = [
@@ -16,16 +15,17 @@ const CATEGORY_VALUES: SkillCategory[] = [
   "Plateforme",
 ];
 
-const getRoleSet = async (): Promise<Set<string>> => {
+const getRoleIdSet = async (): Promise<Set<string>> => {
   const collection = await jobpositions();
-  const cursor = collection.find({}, { projection: { positionName: 1 } });
-  const roles = new Set<string>();
+  const cursor = collection.find({}, { projection: { _id: 1 } });
+  const ids = new Set<string>();
   for await (const document of cursor) {
-    if (document?.positionName) {
-      roles.add(document.positionName as string);
+    const id = document?._id?.toString();
+    if (id) {
+      ids.add(id);
     }
   }
-  return roles;
+  return ids;
 };
 
 const getRequiredString = (value: unknown, message: string) => {
@@ -69,33 +69,31 @@ const parseRoles = (
   roles: Set<string>,
   field: string,
   { required }: { required: boolean },
-): RoleKey[] | undefined => {
+): ExpertiseDoc["rolesPriority"] | undefined => {
   if (value == null) {
     if (required) {
       throw new BadRequestError(`Le champ ${field} est requis.`);
     }
     return undefined;
   }
-  if (!Array.isArray(value)) {
-    throw new BadRequestError(`Le champ ${field} doit être un tableau.`);
-  }
-  if (required && value.length === 0) {
+  const entries = toObjectIdArray(value, field);
+  if (required && entries.length === 0) {
     throw new BadRequestError(`Au moins un rôle est requis pour ${field}.`);
   }
-  const seen = new Set<string>();
-  const parsed: RoleKey[] = [];
-  value.forEach((entry, index) => {
-    if (typeof entry !== "string" || !roles.has(entry)) {
-      throw new BadRequestError(
-        `Le rôle ${entry as string} (${field}[${index}]) est inconnu. Les rôles doivent exister dans JobPositions.`,
-      );
-    }
-    if (!seen.has(entry)) {
-      seen.add(entry);
-      parsed.push(entry as RoleKey);
-    }
+  const uniqueMap = new Map<string, (typeof entries)[number]>();
+  entries.forEach((entry) => {
+    uniqueMap.set(entry.toString(), entry);
   });
-  return parsed;
+  const unique = Array.from(uniqueMap.values());
+  const missing = unique.filter((entry) => !roles.has(entry.toString()));
+  if (missing.length > 0) {
+    throw new BadRequestError(
+      `Certains rôles référencés dans ${field} n'existent pas: ${missing
+        .map((entry) => entry.toString())
+        .join(", ")}.`,
+    );
+  }
+  return unique;
 };
 
 const getOptionalCategory = (value: unknown) => {
@@ -113,18 +111,18 @@ const getOptionalCategory = (value: unknown) => {
 
 export const parseExpertiseCreate = async (
   body: Record<string, unknown>,
-): Promise<CreateExpertisePayload> => {
+): Promise<Omit<ExpertiseDoc, "_id">> => {
   const expertiseName = getRequiredString(
     body.expertiseName,
     "Le nom de l'expertise est requis.",
   );
   const level = getRequiredLevel(body.level);
-  const roleSet = await getRoleSet();
+  const roleSet = await getRoleIdSet();
   const rolesPriority = parseRoles(body.rolesPriority, roleSet, "rolesPriority", {
     required: true,
   }) ?? [];
 
-  const payload: CreateExpertisePayload = {
+  const payload: Omit<ExpertiseDoc, "_id"> = {
     expertiseName,
     level,
     rolesPriority,
@@ -143,8 +141,8 @@ export const parseExpertiseCreate = async (
 
 export const parseExpertiseUpdate = async (
   body: Record<string, unknown>,
-): Promise<UpdateExpertisePayload> => {
-  const payload: UpdateExpertisePayload = {};
+): Promise<Partial<Omit<ExpertiseDoc, "_id">>> => {
+  const payload: Partial<Omit<ExpertiseDoc, "_id">> = {};
 
   if ("expertiseName" in body) {
     payload.expertiseName = getOptionalString(body.expertiseName, "expertiseName");
@@ -155,7 +153,7 @@ export const parseExpertiseUpdate = async (
   }
 
   if ("rolesPriority" in body) {
-    const roleSet = await getRoleSet();
+    const roleSet = await getRoleIdSet();
     payload.rolesPriority = parseRoles(body.rolesPriority, roleSet, "rolesPriority", {
       required: false,
     });

@@ -11,7 +11,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "skillId": { "type": "string", "title": "Compétence (ObjectId)" },
+          "skillId": { "type": "string", "title": "Compétence" },
           "minLevel": {
             "type": "integer",
             "title": "Niveau minimum",
@@ -33,7 +33,7 @@
     "projects": {
       "type": "array",
       "title": "Projets associés",
-      "items": { "type": "string", "title": "Projet (ObjectId)", "default": "" },
+      "items": { "type": "string", "title": "Projet", "default": "" },
       "uniqueItems": true,
       "default": []
     }

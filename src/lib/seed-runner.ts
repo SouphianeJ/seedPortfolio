@@ -43,12 +43,14 @@ const mapProjectSeed = (seed: SeedProject) =>
   stripUndefined({
     ...seed,
     _id: toObjectId(seed._id),
+    roles: seed.roles.map(toObjectId),
   });
 
 const mapExpertiseSeed = (seed: SeedExpertise) =>
   stripUndefined({
     ...seed,
     _id: toObjectId(seed._id),
+    rolesPriority: seed.rolesPriority.map(toObjectId),
     lastUsed: seed.lastUsed,
   });
 
@@ -72,9 +74,9 @@ type SeedCollections = {
 const validateSeedIntegrity = ({ projects, expertises, jobs }: SeedCollections) => {
   const errors: string[] = [];
 
-  const ROLE_SET = new Set(jobs.map((job) => job.positionName));
+  const ROLE_SET = new Set(jobs.map((job) => job._id));
   if (ROLE_SET.size === 0) {
-    errors.push("Aucun role key (positionName) trouvé dans jobPositionSeeds.");
+    errors.push("Aucun identifiant de rôle trouvé dans jobPositionSeeds.");
   }
 
   for (const seed of [...projects, ...expertises, ...jobs]) {
@@ -89,9 +91,13 @@ const validateSeedIntegrity = ({ projects, expertises, jobs }: SeedCollections) 
       errors.push(`Expertise ${expertise._id} lastUsed non ISO (YYYY-MM-DD): ${expertise.lastUsed}`);
     }
     for (const role of expertise.rolesPriority) {
-      if (!ROLE_SET.has(role)) {
+      if (!is24Hex(role)) {
         errors.push(
-          `Expertise ${expertise._id} rolesPriority contient un rôle inconnu: "${role}". Les rôles autorisés proviennent de JobPositions.positionName.`,
+          `Expertise ${expertise._id} rolesPriority contient un identifiant non-hex: "${role}".`,
+        );
+      } else if (!ROLE_SET.has(role)) {
+        errors.push(
+          `Expertise ${expertise._id} rolesPriority référence un poste inconnu: "${role}".`,
         );
       }
     }
@@ -99,9 +105,13 @@ const validateSeedIntegrity = ({ projects, expertises, jobs }: SeedCollections) 
 
   for (const project of projects) {
     for (const role of project.roles) {
-      if (!ROLE_SET.has(role)) {
+      if (!is24Hex(role)) {
         errors.push(
-          `Project ${project._id} roles contient un rôle inconnu: "${role}". Les rôles autorisés proviennent de JobPositions.positionName.`,
+          `Project ${project._id} roles contient un identifiant non-hex: "${role}".`,
+        );
+      } else if (!ROLE_SET.has(role)) {
+        errors.push(
+          `Project ${project._id} roles référence un poste inconnu: "${role}".`,
         );
       }
     }
@@ -111,10 +121,6 @@ const validateSeedIntegrity = ({ projects, expertises, jobs }: SeedCollections) 
   const expertiseIds = new Set(expertises.map((expertise) => expertise._id));
 
   for (const job of jobs) {
-    if (!ROLE_SET.has(job.positionName)) {
-      errors.push(`Job ${job._id} positionName "${job.positionName}" absent de ROLE_SET (incohérence interne).`);
-    }
-
     job.requiredSkills?.forEach((skill, index) => {
       if (!is24Hex(skill.skillId)) {
         errors.push(`Job ${job._id} requiredSkills[${index}] skillId non-hex: ${skill.skillId}`);

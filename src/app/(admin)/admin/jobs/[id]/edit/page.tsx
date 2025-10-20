@@ -34,7 +34,7 @@ export default function EditJobPage() {
     if (!id) {
       throw new Error("Identifiant manquant.");
     }
-    await updateJob(id, formData as UpdateJobPositionPayload);
+    await updateJob(id, formData as unknown as UpdateJobPositionPayload);
     router.push("/admin/jobs");
   };
 
