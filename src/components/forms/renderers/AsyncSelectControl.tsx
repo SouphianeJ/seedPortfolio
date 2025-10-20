@@ -172,7 +172,7 @@ const AsyncStringSelect = (props: ControlProps) => {
   const label = resolveLabel(props);
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex w-full flex-col gap-1">
       <label className="text-sm font-medium text-slate-100" htmlFor={id}>
         {label}
         {required ? " *" : ""}
@@ -182,7 +182,7 @@ const AsyncStringSelect = (props: ControlProps) => {
         id={id}
         value={data ?? ""}
         onChange={(event) => handleChange(path, event.target.value || undefined)}
-        className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         disabled={!enabled || loading}
       >
         <option value="" disabled={required}>
@@ -217,7 +217,7 @@ const AsyncArraySelect = (props: ControlProps) => {
   };
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex w-full flex-col gap-1">
       <label className="text-sm font-medium text-slate-100" htmlFor={id}>
         {label}
         {required ? " *" : ""}
@@ -228,7 +228,7 @@ const AsyncArraySelect = (props: ControlProps) => {
         multiple
         value={value}
         onChange={handleSelectChange}
-        className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
         disabled={!enabled || loading}
       >
         {options.map((option) => (

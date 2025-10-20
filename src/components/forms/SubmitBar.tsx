@@ -21,17 +21,17 @@ export const SubmitBar = ({
   submitProps,
 }: SubmitBarProps) => {
   return (
-    <div className="flex items-center justify-end gap-3 border-t border-slate-800 pt-4">
+    <div className="flex flex-col gap-3 border-t border-slate-800 pt-4 sm:flex-row sm:items-center sm:justify-end">
       <button
         type="button"
         onClick={onCancel}
-        className={`${buttonBase} border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800`}
+        className={`${buttonBase} w-full border-slate-700 bg-slate-900 text-slate-200 hover:bg-slate-800 sm:w-auto`}
       >
         {cancelLabel}
       </button>
       <button
         type="submit"
-        className={`${buttonBase} border-sky-500 bg-sky-500 text-slate-950 hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60`}
+        className={`${buttonBase} w-full border-sky-500 bg-sky-500 text-slate-950 hover:bg-sky-400 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto`}
         disabled={submitting}
         {...submitProps}
       >
