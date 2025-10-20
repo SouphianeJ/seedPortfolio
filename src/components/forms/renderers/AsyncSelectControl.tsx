@@ -9,12 +9,12 @@ import type {
   RankedTester,
 } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
-
-interface AsyncOptionsConfig {
-  url: string;
-  valuePath: string;
-  labelPath: string;
-}
+import {
+  AsyncOptionsConfig,
+  baseInputClass,
+  renderErrors,
+  resolveLabel,
+} from "./utils";
 
 interface Option {
   value: string;
@@ -102,51 +102,12 @@ const useAsyncOptions = (config: AsyncOptionsConfig | undefined) => {
   return { options, loading, error };
 };
 
-const renderErrors = (error?: string | null, formError?: string) => {
-  if (!error && !formError) {
-    return null;
-  }
-  return (
-    <p className="text-xs text-red-400">
-      {error ?? formError}
-    </p>
-  );
-};
-
 const asyncConfigFromUi = (uischema: ControlElement | undefined): AsyncOptionsConfig | undefined => {
   if (!uischema || typeof uischema !== "object") {
     return undefined;
   }
   const options = uischema.options as { asyncOptions?: AsyncOptionsConfig } | undefined;
   return options?.asyncOptions;
-};
-
-type LabelValue = ControlProps["label"];
-
-const labelToString = (label: LabelValue | undefined): string | undefined => {
-  if (typeof label === "string") {
-    return label;
-  }
-  if (label && typeof label === "object" && "text" in label) {
-    const text = (label as { text?: unknown }).text;
-    return typeof text === "string" ? text : undefined;
-  }
-  return undefined;
-};
-
-const resolveLabel = (props: ControlProps): string => {
-  const direct = labelToString(props.label);
-  if (direct) {
-    return direct;
-  }
-  const control = props.uischema as ControlElement;
-  const schema = props.schema as JsonSchema;
-  const controlLabel = labelToString(control?.label as LabelValue);
-  if (controlLabel) {
-    return controlLabel;
-  }
-  const schemaTitle = typeof schema?.title === "string" ? schema.title : undefined;
-  return schemaTitle ?? props.path;
 };
 
 const isArrayOfStrings = (schema: JsonSchema | undefined): boolean => {
@@ -182,7 +143,7 @@ const AsyncStringSelect = (props: ControlProps) => {
         id={id}
         value={data ?? ""}
         onChange={(event) => handleChange(path, event.target.value || undefined)}
-        className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className={baseInputClass}
         disabled={!enabled || loading}
       >
         <option value="" disabled={required}>
@@ -228,7 +189,7 @@ const AsyncArraySelect = (props: ControlProps) => {
         multiple
         value={value}
         onChange={handleSelectChange}
-        className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className={baseInputClass}
         disabled={!enabled || loading}
       >
         {options.map((option) => (
