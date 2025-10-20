@@ -11,7 +11,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "skillId": { "type": "string", "title": "Compétence (ObjectId)" },
+          "skillId": { "type": "string", "title": "Compétence (Nom)" },
           "minLevel": {
             "type": "integer",
             "title": "Niveau minimum",

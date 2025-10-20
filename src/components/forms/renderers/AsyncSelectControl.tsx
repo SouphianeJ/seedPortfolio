@@ -212,7 +212,7 @@ const arrayTester: RankedTester = (uischema, schema) => {
   if (!config) {
     return -1;
   }
-  return isArrayOfStrings(schema as JsonSchema) ? 5 : -1;
+  return isArrayOfStrings(schema as JsonSchema) ? 10 : -1;
 };
 
 const stringTester: RankedTester = (uischema, schema) => {
@@ -224,7 +224,7 @@ const stringTester: RankedTester = (uischema, schema) => {
   if (!config) {
     return -1;
   }
-  return isStringSchema(schema as JsonSchema) ? 5 : -1;
+  return isStringSchema(schema as JsonSchema) ? 10 : -1;
 };
 
 export const asyncArraySelectRenderer: JsonFormsRendererRegistryEntry = {
