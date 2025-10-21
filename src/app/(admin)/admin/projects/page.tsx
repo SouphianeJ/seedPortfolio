@@ -8,6 +8,7 @@ import ProjectRow from "@/components/lists/ProjectRow";
 import EmptyState from "@/components/ui/EmptyState";
 import { useProjects } from "@/hooks/useProjects";
 import { useExpertises } from "@/hooks/useExpertises";
+import { useTools } from "@/hooks/useTools";
 
 const buttonClasses =
   "inline-flex items-center rounded-md border border-sky-500 bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400";
@@ -23,6 +24,7 @@ export default function ProjectsPage() {
     isLoading: expertisesLoading,
     error: expertisesError,
   } = useExpertises();
+  const { tools, isLoading: toolsLoading, error: toolsError } = useTools();
 
   const expertiseMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -32,8 +34,16 @@ export default function ProjectsPage() {
     return map;
   }, [expertises]);
 
-  const isLoading = projectsLoading || expertisesLoading;
-  const error = projectsError ?? expertisesError;
+  const toolMap = useMemo(() => {
+    const map = new Map<string, string>();
+    tools.forEach((tool) => {
+      map.set(tool._id, tool.toolName);
+    });
+    return map;
+  }, [tools]);
+
+  const isLoading = projectsLoading || expertisesLoading || toolsLoading;
+  const error = projectsError ?? expertisesError ?? toolsError;
 
   return (
     <div className="space-y-6">
@@ -79,11 +89,22 @@ export default function ProjectsPage() {
 
       {!isLoading && !error && projects.length > 0 && (
         <Table
-          headers={["Nom", "Année", "Rôles", "Expertises", "Top Facts & Figures", "Actions"]}
+          headers={[
+            "Nom",
+            "Année",
+            "Rôles",
+            "Expertises",
+            "Outils",
+            "Top Facts & Figures",
+            "Actions",
+          ]}
         >
           {projects.map((project) => {
             const expertiseNames = (project.expertises ?? [])
               .map((expertiseId) => expertiseMap.get(expertiseId))
+              .filter((name): name is string => Boolean(name));
+            const toolNames = (project.tools ?? [])
+              .map((toolId) => toolMap.get(toolId))
               .filter((name): name is string => Boolean(name));
 
             return (
@@ -91,6 +112,7 @@ export default function ProjectsPage() {
                 key={project._id}
                 project={project}
                 expertiseNames={expertiseNames}
+                toolNames={toolNames}
               />
             );
           })}

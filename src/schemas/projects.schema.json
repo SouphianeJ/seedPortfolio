@@ -19,6 +19,13 @@
       "uniqueItems": true,
       "default": []
     },
+    "tools": {
+      "type": "array",
+      "title": "Outils mobilisés",
+      "items": { "type": "string" },
+      "uniqueItems": true,
+      "default": []
+    },
     "isKeyProjet": { "type": "boolean", "title": "Projet clé", "default": false },
     "thumbnailPic": { "type": "string", "title": "Vignette (URL)" },
     "shortDescription": { "type": "string", "title": "Résumé" },

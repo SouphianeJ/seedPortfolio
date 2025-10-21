@@ -15,6 +15,7 @@ export interface ProjectDoc {
   year: number;
   roles: RoleKey[];
   expertises?: ObjectId[];
+  tools?: ObjectId[];
   thumbnailPic?: string;
   shortDescription?: string;
   isKeyProjet?: boolean;
@@ -44,12 +45,21 @@ export interface JobPositionDoc {
   subtitle?: string;
 }
 
+export interface ToolDoc {
+  _id: ObjectId;
+  toolName: string;
+  level: 1 | 2 | 3 | 4 | 5;
+  description?: string;
+  usage?: string;
+}
+
 export type CreateProjectPayload = Pick<
   ProjectDoc,
   | "projectName"
   | "year"
   | "roles"
   | "expertises"
+  | "tools"
   | "thumbnailPic"
   | "shortDescription"
   | "isKeyProjet"
@@ -71,5 +81,12 @@ export type CreateJobPositionPayload = Pick<
 >;
 
 export type UpdateJobPositionPayload = Partial<CreateJobPositionPayload>;
+
+export type CreateToolPayload = Pick<
+  ToolDoc,
+  "toolName" | "level" | "description" | "usage"
+>;
+
+export type UpdateToolPayload = Partial<CreateToolPayload>;
 
 export type WithStringId<T> = Omit<T, "_id"> & { _id: string };
