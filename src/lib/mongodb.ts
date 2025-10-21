@@ -3,6 +3,7 @@ import type {
   ExpertiseDoc,
   JobPositionDoc,
   ProjectDoc,
+  ToolDoc,
 } from "./types";
 
 const uri = process.env.MONGODB_URI;
@@ -59,4 +60,9 @@ export const expertises = async (): Promise<Collection<ExpertiseDoc>> => {
 export const jobpositions = async (): Promise<Collection<JobPositionDoc>> => {
   const db = await getDb();
   return db.collection<JobPositionDoc>("jobpositions");
+};
+
+export const tools = async (): Promise<Collection<ToolDoc>> => {
+  const db = await getDb();
+  return db.collection<ToolDoc>("tools");
 };

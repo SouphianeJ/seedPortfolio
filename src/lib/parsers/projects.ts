@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { expertises, jobpositions } from "@/lib/mongodb";
+import { expertises, jobpositions, tools as toolsCollection } from "@/lib/mongodb";
 import type { CreateProjectPayload, RoleKey, UpdateProjectPayload } from "@/lib/types";
 import { BadRequestError, toObjectIdArray } from "@/lib/parsers/objectid";
 
@@ -71,6 +71,20 @@ const assertExpertisesExist = async (
   }
 };
 
+const assertToolsExist = async (ids: ObjectId[] | undefined, field: string) => {
+  if (!ids?.length) {
+    return;
+  }
+
+  const collection = await toolsCollection();
+  const count = await collection.countDocuments({ _id: { $in: ids } });
+  if (count !== ids.length) {
+    throw new BadRequestError(
+      `Certains outils référencés dans ${field} n'existent pas en base.`,
+    );
+  }
+};
+
 const parseFireFacts = (value: unknown, field: string): string[] => {
   if (!Array.isArray(value)) {
     throw new BadRequestError(`Le champ ${field} doit être un tableau.`);
@@ -135,6 +149,10 @@ export const parseProjectCreate = async (
       : undefined;
   await assertExpertisesExist(expertiseIds, "expertises");
 
+  const toolIds =
+    body.tools != null ? toObjectIdArray(body.tools, "tools") : undefined;
+  await assertToolsExist(toolIds, "tools");
+
   let isKeyProjet = false;
   if ("isKeyProjet" in body) {
     if (typeof body.isKeyProjet === "boolean") {
@@ -149,6 +167,7 @@ export const parseProjectCreate = async (
     year: yearValue,
     roles: parsedRoles,
     expertises: expertiseIds,
+    tools: toolIds,
     thumbnailPic,
     shortDescription,
     isKeyProjet,
@@ -203,6 +222,16 @@ export const parseProjectUpdate = async (
       const expertiseIds = toObjectIdArray(body.expertises, "expertises");
       await assertExpertisesExist(expertiseIds, "expertises");
       payload.expertises = expertiseIds;
+    }
+  }
+
+  if ("tools" in body) {
+    if (body.tools == null) {
+      payload.tools = [];
+    } else {
+      const toolIds = toObjectIdArray(body.tools, "tools");
+      await assertToolsExist(toolIds, "tools");
+      payload.tools = toolIds;
     }
   }
 

@@ -29,6 +29,17 @@
             }
           }
         },
+        {
+          "type": "Control",
+          "scope": "#/properties/tools",
+          "options": {
+            "asyncOptions": {
+              "url": "/api/tools",
+              "valuePath": "_id",
+              "labelPath": "toolName"
+            }
+          }
+        },
         { "type": "Control", "scope": "#/properties/isKeyProjet" }
       ]
     },

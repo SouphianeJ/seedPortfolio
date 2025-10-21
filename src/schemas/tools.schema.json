@@ -1,0 +1,22 @@
+{
+  "$id": "ToolsSchema",
+  "type": "object",
+  "properties": {
+    "toolName": { "type": "string", "title": "Nom de l'Outil" },
+    "level": {
+      "type": "integer",
+      "title": "Niveau de maîtrise",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "usage": {
+      "type": "string",
+      "title": "Usage"
+    }
+  },
+  "required": ["toolName", "level"]
+}
