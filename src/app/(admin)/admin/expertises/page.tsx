@@ -5,6 +5,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import Table from "@/components/lists/Table";
 import ExpertiseRow from "@/components/lists/ExpertiseRow";
+import ExpertiseCard from "@/components/cards/ExpertiseCard";
 import { useExpertises } from "@/hooks/useExpertises";
 
 const buttonClasses =
@@ -56,11 +57,25 @@ export default function ExpertisesPage() {
       )}
 
       {!isLoading && !error && expertises.length > 0 && (
-        <Table headers={["Expertise", "Rôles prioritaires", "Actions"]}>
-          {expertises.map((expertise) => (
-            <ExpertiseRow key={expertise._id} expertise={expertise} />
-          ))}
-        </Table>
+        <div className="space-y-4">
+          <div className="lg:hidden">
+            <div className="-mx-4 overflow-x-auto px-4">
+              <div className="flex snap-x snap-mandatory gap-4 pb-4">
+                {expertises.map((expertise) => (
+                  <ExpertiseCard key={expertise._id} expertise={expertise} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden lg:block">
+            <Table headers={["Expertise", "Rôles prioritaires", "Actions"]}>
+              {expertises.map((expertise) => (
+                <ExpertiseRow key={expertise._id} expertise={expertise} />
+              ))}
+            </Table>
+          </div>
+        </div>
       )}
     </div>
   );

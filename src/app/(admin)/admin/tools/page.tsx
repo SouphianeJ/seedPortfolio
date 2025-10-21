@@ -5,6 +5,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import Table from "@/components/lists/Table";
 import ToolRow from "@/components/lists/ToolRow";
+import ToolCard from "@/components/cards/ToolCard";
 import { useTools } from "@/hooks/useTools";
 
 const buttonClasses =
@@ -56,11 +57,25 @@ export default function ToolsPage() {
       )}
 
       {!isLoading && !error && tools.length > 0 && (
-        <Table headers={["Outil", "Niveau", "Usage", "Actions"]}>
-          {tools.map((tool) => (
-            <ToolRow key={tool._id} tool={tool} />
-          ))}
-        </Table>
+        <div className="space-y-4">
+          <div className="lg:hidden">
+            <div className="-mx-4 overflow-x-auto px-4">
+              <div className="flex snap-x snap-mandatory gap-4 pb-4">
+                {tools.map((tool) => (
+                  <ToolCard key={tool._id} tool={tool} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden lg:block">
+            <Table headers={["Outil", "Niveau", "Usage", "Actions"]}>
+              {tools.map((tool) => (
+                <ToolRow key={tool._id} tool={tool} />
+              ))}
+            </Table>
+          </div>
+        </div>
       )}
     </div>
   );

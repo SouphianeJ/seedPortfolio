@@ -5,6 +5,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import Table from "@/components/lists/Table";
 import JobRow from "@/components/lists/JobRow";
+import JobCard from "@/components/cards/JobCard";
 import { useJobs } from "@/hooks/useJobs";
 
 const buttonClasses =
@@ -56,11 +57,25 @@ export default function JobsPage() {
       )}
 
       {!isLoading && !error && jobs.length > 0 && (
-        <Table headers={["Poste", "Synthèse", "Actions"]}>
-          {jobs.map((job) => (
-            <JobRow key={job._id} job={job} />
-          ))}
-        </Table>
+        <div className="space-y-4">
+          <div className="lg:hidden">
+            <div className="-mx-4 overflow-x-auto px-4">
+              <div className="flex snap-x snap-mandatory gap-4 pb-4">
+                {jobs.map((job) => (
+                  <JobCard key={job._id} job={job} />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden lg:block">
+            <Table headers={["Poste", "Synthèse", "Actions"]}>
+              {jobs.map((job) => (
+                <JobRow key={job._id} job={job} />
+              ))}
+            </Table>
+          </div>
+        </div>
       )}
     </div>
   );

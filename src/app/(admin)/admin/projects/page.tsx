@@ -5,6 +5,7 @@ import Link from "next/link";
 import PageHeader from "@/components/ui/PageHeader";
 import Table from "@/components/lists/Table";
 import ProjectRow from "@/components/lists/ProjectRow";
+import ProjectCard from "@/components/cards/ProjectCard";
 import EmptyState from "@/components/ui/EmptyState";
 import { useProjects } from "@/hooks/useProjects";
 import { useExpertises } from "@/hooks/useExpertises";
@@ -88,35 +89,63 @@ export default function ProjectsPage() {
       )}
 
       {!isLoading && !error && projects.length > 0 && (
-        <Table
-          headers={[
-            "Nom",
-            "Année",
-            "Rôles",
-            "Expertises",
-            "Outils",
-            "Top Facts & Figures",
-            "Actions",
-          ]}
-        >
-          {projects.map((project) => {
-            const expertiseNames = (project.expertises ?? [])
-              .map((expertiseId) => expertiseMap.get(expertiseId))
-              .filter((name): name is string => Boolean(name));
-            const toolNames = (project.tools ?? [])
-              .map((toolId) => toolMap.get(toolId))
-              .filter((name): name is string => Boolean(name));
+        <div className="space-y-4">
+          <div className="lg:hidden">
+            <div className="-mx-4 overflow-x-auto px-4">
+              <div className="flex snap-x snap-mandatory gap-4 pb-4">
+                {projects.map((project) => {
+                  const expertiseNames = (project.expertises ?? [])
+                    .map((expertiseId) => expertiseMap.get(expertiseId))
+                    .filter((name): name is string => Boolean(name));
+                  const toolNames = (project.tools ?? [])
+                    .map((toolId) => toolMap.get(toolId))
+                    .filter((name): name is string => Boolean(name));
 
-            return (
-              <ProjectRow
-                key={project._id}
-                project={project}
-                expertiseNames={expertiseNames}
-                toolNames={toolNames}
-              />
-            );
-          })}
-        </Table>
+                  return (
+                    <ProjectCard
+                      key={`${project._id}-card`}
+                      project={project}
+                      expertiseNames={expertiseNames}
+                      toolNames={toolNames}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className="hidden lg:block">
+            <Table
+              headers={[
+                "Nom",
+                "Année",
+                "Rôles",
+                "Expertises",
+                "Outils",
+                "Top Facts & Figures",
+                "Actions",
+              ]}
+            >
+              {projects.map((project) => {
+                const expertiseNames = (project.expertises ?? [])
+                  .map((expertiseId) => expertiseMap.get(expertiseId))
+                  .filter((name): name is string => Boolean(name));
+                const toolNames = (project.tools ?? [])
+                  .map((toolId) => toolMap.get(toolId))
+                  .filter((name): name is string => Boolean(name));
+
+                return (
+                  <ProjectRow
+                    key={project._id}
+                    project={project}
+                    expertiseNames={expertiseNames}
+                    toolNames={toolNames}
+                  />
+                );
+              })}
+            </Table>
+          </div>
+        </div>
       )}
     </div>
   );
