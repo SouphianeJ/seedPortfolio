@@ -24,6 +24,7 @@ export const serializeProject = (project: ProjectDoc): SerializedProject => {
   const base = withStringId(project);
   return {
     ...base,
+    isKeyProjet: project.isKeyProjet ?? false,
     expertises: project.expertises?.map((expertiseId) => expertiseId.toString()),
   };
 };

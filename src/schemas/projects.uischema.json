@@ -28,7 +28,8 @@
               "labelPath": "expertiseName"
             }
           }
-        }
+        },
+        { "type": "Control", "scope": "#/properties/isKeyProjet" }
       ]
     },
     { "type": "Control", "scope": "#/properties/thumbnailPic" },

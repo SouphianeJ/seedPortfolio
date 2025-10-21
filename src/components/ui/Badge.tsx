@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 interface BadgeProps {
   children: ReactNode;
-  color?: "sky" | "slate" | "emerald" | "violet";
+  color?: "sky" | "slate" | "emerald" | "violet" | "gold";
 }
 
 const colorMap: Record<NonNullable<BadgeProps["color"]>, string> = {
@@ -12,11 +12,12 @@ const colorMap: Record<NonNullable<BadgeProps["color"]>, string> = {
   slate: "bg-slate-500/20 text-slate-200 border-slate-500/40",
   emerald: "bg-emerald-500/20 text-emerald-300 border-emerald-500/40",
   violet: "bg-violet-500/20 text-violet-300 border-violet-500/40",
+  gold: "bg-amber-500/20 text-amber-200 border-amber-500/40",
 };
 
 export const Badge = ({ children, color = "slate" }: BadgeProps) => (
   <span
-    className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${colorMap[color]}`}
+    className={`inline-flex items-center justify-center whitespace-pre-line break-words rounded-full border px-3 py-1 text-xs font-medium leading-tight text-center ${colorMap[color]}`}
   >
     {children}
   </span>

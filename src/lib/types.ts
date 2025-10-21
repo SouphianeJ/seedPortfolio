@@ -17,6 +17,7 @@ export interface ProjectDoc {
   expertises?: ObjectId[];
   thumbnailPic?: string;
   shortDescription?: string;
+  isKeyProjet?: boolean;
 }
 
 export interface ExpertiseDoc {
@@ -44,7 +45,13 @@ export interface JobPositionDoc {
 
 export type CreateProjectPayload = Pick<
   ProjectDoc,
-  "projectName" | "year" | "roles" | "expertises" | "thumbnailPic" | "shortDescription"
+  | "projectName"
+  | "year"
+  | "roles"
+  | "expertises"
+  | "thumbnailPic"
+  | "shortDescription"
+  | "isKeyProjet"
 >;
 
 export type UpdateProjectPayload = Partial<CreateProjectPayload>;
