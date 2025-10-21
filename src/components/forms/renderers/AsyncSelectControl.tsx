@@ -121,7 +121,7 @@ const isArrayOfStrings = (schema: JsonSchema | undefined): boolean => {
 
 const isStringSchema = (schema: JsonSchema | undefined): boolean => schema?.type === "string";
 
-const AsyncStringSelect = (props: ControlProps) => {
+export const AsyncStringSelectControl = (props: ControlProps) => {
   const { uischema, data, handleChange, path, id, required, description, enabled, visible } = props;
   const config = asyncConfigFromUi(uischema as ControlElement);
   const { options, loading, error } = useAsyncOptions(config);
@@ -160,7 +160,7 @@ const AsyncStringSelect = (props: ControlProps) => {
   );
 };
 
-const AsyncArraySelect = (props: ControlProps) => {
+export const AsyncArraySelectControl = (props: ControlProps) => {
   const { uischema, data, handleChange, path, id, required, description, enabled, visible } = props;
   const config = asyncConfigFromUi(uischema as ControlElement);
   const { options, loading, error } = useAsyncOptions(config);
@@ -229,10 +229,10 @@ const stringTester: RankedTester = (uischema, schema) => {
 
 export const asyncArraySelectRenderer: JsonFormsRendererRegistryEntry = {
   tester: arrayTester,
-  renderer: withJsonFormsControlProps(AsyncArraySelect),
+  renderer: withJsonFormsControlProps(AsyncArraySelectControl),
 };
 
 export const asyncStringSelectRenderer: JsonFormsRendererRegistryEntry = {
   tester: stringTester,
-  renderer: withJsonFormsControlProps(AsyncStringSelect),
+  renderer: withJsonFormsControlProps(AsyncStringSelectControl),
 };

@@ -33,7 +33,7 @@
     "projects": {
       "type": "array",
       "title": "Projets associés",
-      "items": { "type": "string", "title": "Projet (ObjectId)", "default": "" },
+      "items": { "type": "string", "title": "Projet (Nom)", "default": "" },
       "uniqueItems": true,
       "default": []
     }

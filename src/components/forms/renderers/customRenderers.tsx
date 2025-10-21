@@ -20,7 +20,16 @@ import {
   type UISchemaElement,
 } from "@jsonforms/core";
 import { JsonFormsDispatch, withJsonFormsControlProps, withJsonFormsLayoutProps } from "@jsonforms/react";
-import { baseInputClass, controlOptions, fieldDescriptionClass, fieldErrorClass, fieldLabelClass, resolveLabel } from "./utils";
+import { AsyncArraySelectControl, AsyncStringSelectControl } from "./AsyncSelectControl";
+import {
+  AsyncOptionsConfig,
+  baseInputClass,
+  controlOptions,
+  fieldDescriptionClass,
+  fieldErrorClass,
+  fieldLabelClass,
+  resolveLabel,
+} from "./utils";
 
 interface DetailOption extends Record<string, unknown> {
   detail?: UISchemaElement;
@@ -57,7 +66,12 @@ const TextControl = (props: ControlProps) => {
     return null;
   }
 
-  const options = controlOptions<{ multi?: boolean } | undefined>(props);
+  const options = controlOptions<
+    { multi?: boolean; asyncOptions?: AsyncOptionsConfig } | undefined
+  >(props);
+  if (options?.asyncOptions) {
+    return <AsyncStringSelectControl {...props} />;
+  }
   const isTextArea = Boolean(options?.multi);
   const label = resolveLabel(props);
   const value = data ?? "";
@@ -249,9 +263,19 @@ const PrimitiveArrayControl = (props: ControlProps) => {
     return null;
   }
 
+  const itemsSchema = (schema as JsonSchema | undefined)?.items as JsonSchema | undefined;
+  const arrayOptions = controlOptions<{ asyncOptions?: AsyncOptionsConfig } | undefined>(props);
+  const itemsType = itemsSchema?.type;
+  const isStringArray =
+    itemsType === "string" ||
+    (Array.isArray(itemsType) && (itemsType as unknown[]).some((type) => type === "string"));
+
+  if (arrayOptions?.asyncOptions && isStringArray) {
+    return <AsyncArraySelectControl {...props} />;
+  }
+
   const label = resolveLabel(props);
   const value: unknown[] = Array.isArray(data) ? data : [];
-  const itemsSchema = (schema as JsonSchema | undefined)?.items as JsonSchema | undefined;
   const itemEnum = Array.isArray(itemsSchema?.enum) ? (itemsSchema?.enum as unknown[]) : undefined;
   const itemType = Array.isArray(itemsSchema?.type)
     ? (itemsSchema?.type as string[])[0]

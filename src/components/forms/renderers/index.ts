@@ -2,9 +2,9 @@ import { asyncArraySelectRenderer, asyncStringSelectRenderer } from "./AsyncSele
 import { customRenderers } from "./customRenderers";
 
 export const formRenderers = [
-  ...customRenderers,
   asyncStringSelectRenderer,
   asyncArraySelectRenderer,
+  ...customRenderers,
 ];
 
 export { asyncArraySelectRenderer, asyncStringSelectRenderer, customRenderers };
