@@ -24,6 +24,7 @@ import { AsyncArraySelectControl, AsyncStringSelectControl } from "./AsyncSelect
 import {
   AsyncOptionsConfig,
   baseInputClass,
+  baseSelectClass,
   controlOptions,
   fieldDescriptionClass,
   fieldErrorClass,
@@ -121,7 +122,7 @@ const EnumControl = (props: ControlProps) => {
         id={id}
         value={value}
         onChange={(event) => handleChange(path, event.target.value || undefined)}
-        className={baseInputClass}
+        className={baseSelectClass}
         disabled={!enabled}
       >
         <option value="" disabled={required}>
@@ -301,7 +302,7 @@ const PrimitiveArrayControl = (props: ControlProps) => {
       const selected = entry == null ? "" : String(entry);
       return (
         <select
-          className={baseInputClass}
+          className={baseSelectClass}
           value={selected}
           onChange={(event) => updateItem(index, event.target.value || undefined)}
           disabled={!enabled}

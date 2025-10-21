@@ -11,7 +11,7 @@ import type {
 import { withJsonFormsControlProps } from "@jsonforms/react";
 import {
   AsyncOptionsConfig,
-  baseInputClass,
+  baseSelectClass,
   renderErrors,
   resolveLabel,
 } from "./utils";
@@ -143,7 +143,7 @@ export const AsyncStringSelectControl = (props: ControlProps) => {
         id={id}
         value={data ?? ""}
         onChange={(event) => handleChange(path, event.target.value || undefined)}
-        className={baseInputClass}
+        className={baseSelectClass}
         disabled={!enabled || loading}
       >
         <option value="" disabled={required}>
@@ -189,7 +189,7 @@ export const AsyncArraySelectControl = (props: ControlProps) => {
         multiple
         value={value}
         onChange={handleSelectChange}
-        className={baseInputClass}
+        className={baseSelectClass}
         disabled={!enabled || loading}
       >
         {options.map((option) => (
