@@ -21,7 +21,15 @@
     },
     "isKeyProjet": { "type": "boolean", "title": "Projet clé", "default": false },
     "thumbnailPic": { "type": "string", "title": "Vignette (URL)" },
-    "shortDescription": { "type": "string", "title": "Résumé" }
+    "shortDescription": { "type": "string", "title": "Résumé" },
+    "fireFacts": {
+      "type": "array",
+      "title": "Top Facts and Figures",
+      "description": "Ajoutez des faits marquants et des chiffres clés pour illustrer les résultats du projet.",
+      "items": { "type": "string", "title": "Fait marquant" },
+      "uniqueItems": true,
+      "default": []
+    }
   },
   "required": ["projectName", "year", "roles"]
 }

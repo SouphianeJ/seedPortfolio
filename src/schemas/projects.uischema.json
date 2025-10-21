@@ -37,6 +37,7 @@
       "type": "Control",
       "scope": "#/properties/shortDescription",
       "options": { "multi": true }
-    }
+    },
+    { "type": "Control", "scope": "#/properties/fireFacts" }
   ]
 }

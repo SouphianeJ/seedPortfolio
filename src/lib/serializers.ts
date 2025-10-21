@@ -18,6 +18,7 @@ const withStringId = <T extends { _id: ObjectId }>(
 
 export type SerializedProject = Omit<WithStringId<ProjectDoc>, "expertises"> & {
   expertises?: string[];
+  fireFacts: string[];
 };
 
 export const serializeProject = (project: ProjectDoc): SerializedProject => {
@@ -26,6 +27,7 @@ export const serializeProject = (project: ProjectDoc): SerializedProject => {
     ...base,
     isKeyProjet: project.isKeyProjet ?? false,
     expertises: project.expertises?.map((expertiseId) => expertiseId.toString()),
+    fireFacts: project.fireFacts ?? [],
   };
 };
 

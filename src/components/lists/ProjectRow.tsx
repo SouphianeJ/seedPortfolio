@@ -14,9 +14,7 @@ export const ProjectRow = ({ project, expertiseNames = [] }: ProjectRowProps) =>
     <td className="px-4 py-3">
       <div className="flex flex-wrap items-center gap-2">
         <div className="font-medium text-slate-100">{project.projectName}</div>
-        {project.isKeyProjet && (
-          <Badge color="gold">Projet clé</Badge>
-        )}
+        {project.isKeyProjet && <Badge color="gold">Projet clé</Badge>}
       </div>
       {project.shortDescription && (
         <p className="mt-1 text-xs text-slate-400">{project.shortDescription}</p>
@@ -41,6 +39,20 @@ export const ProjectRow = ({ project, expertiseNames = [] }: ProjectRowProps) =>
             </Badge>
           ))}
         </div>
+      ) : (
+        <span className="text-xs text-slate-400">Non renseigné</span>
+      )}
+    </td>
+    <td className="px-4 py-3">
+      {project.fireFacts.length > 0 ? (
+        <ul className="space-y-1 text-xs text-slate-200">
+          {project.fireFacts.map((fact, index) => (
+            <li key={`${fact}-${index}`} className="flex items-start gap-2">
+              <span className="mt-1 inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+              <span>{fact}</span>
+            </li>
+          ))}
+        </ul>
       ) : (
         <span className="text-xs text-slate-400">Non renseigné</span>
       )}
