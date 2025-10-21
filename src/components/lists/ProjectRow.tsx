@@ -6,9 +6,10 @@ import type { SerializedProject } from "@/lib/serializers";
 
 interface ProjectRowProps {
   project: SerializedProject;
+  expertiseNames?: string[];
 }
 
-export const ProjectRow = ({ project }: ProjectRowProps) => (
+export const ProjectRow = ({ project, expertiseNames = [] }: ProjectRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
     <td className="px-4 py-3">
       <div className="font-medium text-slate-100">{project.projectName}</div>
@@ -25,6 +26,19 @@ export const ProjectRow = ({ project }: ProjectRowProps) => (
           </Badge>
         ))}
       </div>
+    </td>
+    <td className="px-4 py-3">
+      {expertiseNames.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {expertiseNames.map((expertise) => (
+            <Badge key={expertise} color="violet">
+              {expertise}
+            </Badge>
+          ))}
+        </div>
+      ) : (
+        <span className="text-xs text-slate-400">Non renseigné</span>
+      )}
     </td>
     <td className="px-4 py-3 text-right">
       <Link
