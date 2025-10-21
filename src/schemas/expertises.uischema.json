@@ -3,6 +3,11 @@
   "elements": [
     { "type": "Control", "scope": "#/properties/expertiseName" },
     {
+      "type": "Control",
+      "scope": "#/properties/description",
+      "options": { "multi": true }
+    },
+    {
       "type": "Group",
       "label": "Priorisation",
       "elements": [

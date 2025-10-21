@@ -24,6 +24,7 @@ export interface ExpertiseDoc {
   expertiseName: string;
   level: 1 | 2 | 3 | 4 | 5;
   rolesPriority: RoleKey[];
+  description?: string;
   category?: SkillCategory;
   lastUsed?: string;
 }
@@ -50,7 +51,7 @@ export type UpdateProjectPayload = Partial<CreateProjectPayload>;
 
 export type CreateExpertisePayload = Pick<
   ExpertiseDoc,
-  "expertiseName" | "level" | "rolesPriority" | "category" | "lastUsed"
+  "expertiseName" | "level" | "rolesPriority" | "description" | "category" | "lastUsed"
 >;
 
 export type UpdateExpertisePayload = Partial<CreateExpertisePayload>;

@@ -61,6 +61,8 @@ export const expertiseSeeds: SeedExpertise[] = [
     expertiseName: "Design pédagogique avancé",
     level: 5,
     rolesPriority: ["Ingénierie pédagogique", "Chef de projet", "Administrateur Moodle"],
+    description:
+      "Conception de parcours blended complexes, scénarisation et accompagnement des équipes pédagogiques.",
     category: "Ingénierie pédago",
     lastUsed: "2024-12-01",
   },
@@ -69,6 +71,8 @@ export const expertiseSeeds: SeedExpertise[] = [
     expertiseName: "Administration Moodle",
     level: 4,
     rolesPriority: ["Administrateur Moodle", "Ingénierie pédagogique", "Chef de projet"],
+    description:
+      "Gestion avancée des instances Moodle, optimisation des performances et automatisation des déploiements.",
     category: "Plateforme",
     lastUsed: "2024-11-15",
   },
@@ -77,6 +81,8 @@ export const expertiseSeeds: SeedExpertise[] = [
     expertiseName: "Développement web full-stack",
     level: 5,
     rolesPriority: ["Développeur web", "Chef de projet", "Administrateur Moodle"],
+    description:
+      "Développement d'applications pédagogiques Node.js/React, intégrations API et pipelines CI/CD.",
     category: "Web/API",
     lastUsed: "2024-10-03",
   },
@@ -85,6 +91,8 @@ export const expertiseSeeds: SeedExpertise[] = [
     expertiseName: "Data storytelling",
     level: 3,
     rolesPriority: ["Développeur web", "Chef de projet"],
+    description:
+      "Analyse des données apprenants et création de dataviz engageantes pour piloter la performance.",
     category: "Data/IA",
     lastUsed: "2024-09-20",
   },
