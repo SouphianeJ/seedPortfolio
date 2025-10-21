@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
+import ExpandableText from "@/components/ui/ExpandableText";
 import type { JobPositionDoc, WithStringId } from "@/lib/types";
 
 interface JobRowProps {
@@ -14,7 +15,12 @@ export const JobRow = ({ job }: JobRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
     <td className="px-4 py-3" data-label="Poste">
       <div className="font-medium text-slate-100">{job.positionName}</div>
-      {job.subtitle && <p className="mt-1 text-xs text-slate-400">{job.subtitle}</p>}
+      {job.subtitle && (
+        <ExpandableText
+          text={job.subtitle}
+          className="mt-1 text-xs text-slate-400"
+        />
+      )}
     </td>
     <td className="px-4 py-3" data-label="Synthèse">
       <div className="flex flex-wrap gap-2">
