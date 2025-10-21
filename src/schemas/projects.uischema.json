@@ -17,6 +17,17 @@
               "labelPath": "positionName"
             }
           }
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/expertises",
+          "options": {
+            "asyncOptions": {
+              "url": "/api/expertises",
+              "valuePath": "_id",
+              "labelPath": "expertiseName"
+            }
+          }
         }
       ]
     },

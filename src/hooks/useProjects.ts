@@ -2,17 +2,13 @@
 
 import useSWR, { mutate } from "swr";
 import { fetcher, jsonFetch } from "@/lib/fetcher";
-import type {
-  CreateProjectPayload,
-  ProjectDoc,
-  UpdateProjectPayload,
-  WithStringId,
-} from "@/lib/types";
+import type { CreateProjectPayload, UpdateProjectPayload } from "@/lib/types";
+import type { SerializedProject } from "@/lib/serializers";
 
 const COLLECTION_KEY = "/api/projects";
 
 export const useProjects = () => {
-  const { data, error, isLoading } = useSWR<WithStringId<ProjectDoc>[]>(
+  const { data, error, isLoading } = useSWR<SerializedProject[]>(
     COLLECTION_KEY,
     fetcher,
   );
@@ -26,14 +22,14 @@ export const useProjects = () => {
 
 export const useProject = (id: string | null) => {
   const shouldFetch = Boolean(id);
-  return useSWR<WithStringId<ProjectDoc>>(
+  return useSWR<SerializedProject>(
     shouldFetch ? `${COLLECTION_KEY}/${id}` : null,
     fetcher,
   );
 };
 
 export const createProject = async (payload: CreateProjectPayload) => {
-  const document = await jsonFetch<WithStringId<ProjectDoc>>(COLLECTION_KEY, {
+  const document = await jsonFetch<SerializedProject>(COLLECTION_KEY, {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -45,7 +41,7 @@ export const updateProject = async (
   id: string,
   payload: UpdateProjectPayload,
 ) => {
-  const document = await jsonFetch<WithStringId<ProjectDoc>>(
+  const document = await jsonFetch<SerializedProject>(
     `${COLLECTION_KEY}/${id}`,
     {
       method: "PUT",

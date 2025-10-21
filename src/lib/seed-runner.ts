@@ -43,6 +43,7 @@ const mapProjectSeed = (seed: SeedProject) =>
   stripUndefined({
     ...seed,
     _id: toObjectId(seed._id),
+    expertises: seed.expertises?.map(toObjectId),
   });
 
 const mapExpertiseSeed = (seed: SeedExpertise) =>
@@ -73,6 +74,8 @@ const validateSeedIntegrity = ({ projects, expertises, jobs }: SeedCollections) 
   const errors: string[] = [];
 
   const ROLE_SET = new Set(jobs.map((job) => job.positionName));
+  const PROJECT_ID_SET = new Set(projects.map((project) => project._id));
+  const EXPERTISE_ID_SET = new Set(expertises.map((expertise) => expertise._id));
   if (ROLE_SET.size === 0) {
     errors.push("Aucun role key (positionName) trouvé dans jobPositionSeeds.");
   }
@@ -105,10 +108,18 @@ const validateSeedIntegrity = ({ projects, expertises, jobs }: SeedCollections) 
         );
       }
     }
+    project.expertises?.forEach((expertiseId, index) => {
+      if (!is24Hex(expertiseId)) {
+        errors.push(
+          `Project ${project._id} expertises[${index}] non-hex: ${expertiseId}`,
+        );
+      } else if (!EXPERTISE_ID_SET.has(expertiseId)) {
+        errors.push(
+          `Project ${project._id} expertise inconnue: ${expertiseId}`,
+        );
+      }
+    });
   }
-
-  const projectIds = new Set(projects.map((project) => project._id));
-  const expertiseIds = new Set(expertises.map((expertise) => expertise._id));
 
   for (const job of jobs) {
     if (!ROLE_SET.has(job.positionName)) {
@@ -118,7 +129,7 @@ const validateSeedIntegrity = ({ projects, expertises, jobs }: SeedCollections) 
     job.requiredSkills?.forEach((skill, index) => {
       if (!is24Hex(skill.skillId)) {
         errors.push(`Job ${job._id} requiredSkills[${index}] skillId non-hex: ${skill.skillId}`);
-      } else if (!expertiseIds.has(skill.skillId)) {
+      } else if (!EXPERTISE_ID_SET.has(skill.skillId)) {
         errors.push(`Job ${job._id} requiredSkills[${index}] skillId inconnu: ${skill.skillId}`);
       }
       if (!(skill.minLevel >= 1 && skill.minLevel <= 5)) {
@@ -132,7 +143,7 @@ const validateSeedIntegrity = ({ projects, expertises, jobs }: SeedCollections) 
     job.projects?.forEach((projectId, index) => {
       if (!is24Hex(projectId)) {
         errors.push(`Job ${job._id} projects[${index}] non-hex: ${projectId}`);
-      } else if (!projectIds.has(projectId)) {
+      } else if (!PROJECT_ID_SET.has(projectId)) {
         errors.push(`Job ${job._id} project inconnu: ${projectId}`);
       }
     });

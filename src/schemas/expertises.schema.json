@@ -18,6 +18,10 @@
       "uniqueItems": true,
       "default": []
     },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
     "category": {
       "type": "string",
       "title": "Catégorie",

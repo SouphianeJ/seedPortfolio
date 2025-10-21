@@ -130,6 +130,10 @@ export const parseExpertiseCreate = async (
     rolesPriority,
   };
 
+  if (typeof body.description === "string" && body.description.trim()) {
+    payload.description = body.description.trim();
+  }
+
   if (typeof body.category === "string" && CATEGORY_VALUES.includes(body.category as SkillCategory)) {
     payload.category = body.category as SkillCategory;
   }
@@ -167,6 +171,11 @@ export const parseExpertiseUpdate = async (
 
   if ("lastUsed" in body) {
     payload.lastUsed = getOptionalString(body.lastUsed, "lastUsed");
+  }
+
+  if ("description" in body) {
+    const description = getOptionalString(body.description, "description");
+    payload.description = description ? description : undefined;
   }
 
   return payload;

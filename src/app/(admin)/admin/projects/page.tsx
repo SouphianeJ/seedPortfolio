@@ -1,17 +1,39 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import PageHeader from "@/components/ui/PageHeader";
 import Table from "@/components/lists/Table";
 import ProjectRow from "@/components/lists/ProjectRow";
 import EmptyState from "@/components/ui/EmptyState";
 import { useProjects } from "@/hooks/useProjects";
+import { useExpertises } from "@/hooks/useExpertises";
 
 const buttonClasses =
   "inline-flex items-center rounded-md border border-sky-500 bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400";
 
 export default function ProjectsPage() {
-  const { projects, isLoading, error } = useProjects();
+  const {
+    projects,
+    isLoading: projectsLoading,
+    error: projectsError,
+  } = useProjects();
+  const {
+    expertises,
+    isLoading: expertisesLoading,
+    error: expertisesError,
+  } = useExpertises();
+
+  const expertiseMap = useMemo(() => {
+    const map = new Map<string, string>();
+    expertises.forEach((expertise) => {
+      map.set(expertise._id, expertise.expertiseName);
+    });
+    return map;
+  }, [expertises]);
+
+  const isLoading = projectsLoading || expertisesLoading;
+  const error = projectsError ?? expertisesError;
 
   return (
     <div className="space-y-6">
@@ -56,10 +78,20 @@ export default function ProjectsPage() {
       )}
 
       {!isLoading && !error && projects.length > 0 && (
-        <Table headers={["Nom", "Année", "Rôles", "Actions"]}>
-          {projects.map((project) => (
-            <ProjectRow key={project._id} project={project} />
-          ))}
+        <Table headers={["Nom", "Année", "Rôles", "Expertises", "Actions"]}>
+          {projects.map((project) => {
+            const expertiseNames = (project.expertises ?? [])
+              .map((expertiseId) => expertiseMap.get(expertiseId))
+              .filter((name): name is string => Boolean(name));
+
+            return (
+              <ProjectRow
+                key={project._id}
+                project={project}
+                expertiseNames={expertiseNames}
+              />
+            );
+          })}
         </Table>
       )}
     </div>

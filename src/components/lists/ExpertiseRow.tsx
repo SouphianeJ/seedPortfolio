@@ -12,6 +12,9 @@ export const ExpertiseRow = ({ expertise }: ExpertiseRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
     <td className="px-4 py-3">
       <div className="font-medium text-slate-100">{expertise.expertiseName}</div>
+      {expertise.description && (
+        <p className="mt-1 text-xs text-slate-400">{expertise.description}</p>
+      )}
       <div className="mt-2 flex flex-wrap gap-2">
         <Badge color="emerald">Niveau {expertise.level} / 5</Badge>
         {expertise.category && <Badge color="violet">{expertise.category}</Badge>}

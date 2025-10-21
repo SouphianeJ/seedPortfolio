@@ -14,6 +14,7 @@ export interface ProjectDoc {
   projectName: string;
   year: number;
   roles: RoleKey[];
+  expertises?: ObjectId[];
   thumbnailPic?: string;
   shortDescription?: string;
 }
@@ -23,6 +24,7 @@ export interface ExpertiseDoc {
   expertiseName: string;
   level: 1 | 2 | 3 | 4 | 5;
   rolesPriority: RoleKey[];
+  description?: string;
   category?: SkillCategory;
   lastUsed?: string;
 }
@@ -42,14 +44,14 @@ export interface JobPositionDoc {
 
 export type CreateProjectPayload = Pick<
   ProjectDoc,
-  "projectName" | "year" | "roles" | "thumbnailPic" | "shortDescription"
+  "projectName" | "year" | "roles" | "expertises" | "thumbnailPic" | "shortDescription"
 >;
 
 export type UpdateProjectPayload = Partial<CreateProjectPayload>;
 
 export type CreateExpertisePayload = Pick<
   ExpertiseDoc,
-  "expertiseName" | "level" | "rolesPriority" | "category" | "lastUsed"
+  "expertiseName" | "level" | "rolesPriority" | "description" | "category" | "lastUsed"
 >;
 
 export type UpdateExpertisePayload = Partial<CreateExpertisePayload>;
