@@ -18,6 +18,7 @@ export interface ProjectDoc {
   thumbnailPic?: string;
   shortDescription?: string;
   isKeyProjet?: boolean;
+  fireFacts?: string[];
 }
 
 export interface ExpertiseDoc {
@@ -52,6 +53,7 @@ export type CreateProjectPayload = Pick<
   | "thumbnailPic"
   | "shortDescription"
   | "isKeyProjet"
+  | "fireFacts"
 >;
 
 export type UpdateProjectPayload = Partial<CreateProjectPayload>;

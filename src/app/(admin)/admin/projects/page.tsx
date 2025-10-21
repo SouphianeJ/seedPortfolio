@@ -78,7 +78,9 @@ export default function ProjectsPage() {
       )}
 
       {!isLoading && !error && projects.length > 0 && (
-        <Table headers={["Nom", "Année", "Rôles", "Expertises", "Actions"]}>
+        <Table
+          headers={["Nom", "Année", "Rôles", "Expertises", "Top Facts & Figures", "Actions"]}
+        >
           {projects.map((project) => {
             const expertiseNames = (project.expertises ?? [])
               .map((expertiseId) => expertiseMap.get(expertiseId))

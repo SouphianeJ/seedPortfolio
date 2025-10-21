@@ -71,6 +71,36 @@ const assertExpertisesExist = async (
   }
 };
 
+const parseFireFacts = (value: unknown, field: string): string[] => {
+  if (!Array.isArray(value)) {
+    throw new BadRequestError(`Le champ ${field} doit être un tableau.`);
+  }
+
+  const seen = new Set<string>();
+  const parsed: string[] = [];
+
+  value.forEach((entry, index) => {
+    if (entry == null) {
+      return;
+    }
+    if (typeof entry !== "string") {
+      throw new BadRequestError(
+        `Chaque élément de ${field} doit être une chaîne de caractères (index ${index}).`,
+      );
+    }
+    const trimmed = entry.trim();
+    if (!trimmed) {
+      return;
+    }
+    if (!seen.has(trimmed)) {
+      seen.add(trimmed);
+      parsed.push(trimmed);
+    }
+  });
+
+  return parsed;
+};
+
 export const parseProjectCreate = async (
   body: Record<string, unknown>,
 ): Promise<CreateProjectPayload> => {
@@ -122,6 +152,8 @@ export const parseProjectCreate = async (
     thumbnailPic,
     shortDescription,
     isKeyProjet,
+    fireFacts:
+      body.fireFacts == null ? [] : parseFireFacts(body.fireFacts, "fireFacts"),
   };
 };
 
@@ -181,6 +213,14 @@ export const parseProjectUpdate = async (
       payload.isKeyProjet = false;
     } else {
       throw new BadRequestError("Le champ isKeyProjet doit être un booléen.");
+    }
+  }
+
+  if ("fireFacts" in body) {
+    if (body.fireFacts == null) {
+      payload.fireFacts = [];
+    } else {
+      payload.fireFacts = parseFireFacts(body.fireFacts, "fireFacts");
     }
   }
 
