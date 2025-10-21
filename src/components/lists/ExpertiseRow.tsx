@@ -8,39 +8,81 @@ interface ExpertiseRowProps {
   expertise: WithStringId<ExpertiseDoc>;
 }
 
-export const ExpertiseRow = ({ expertise }: ExpertiseRowProps) => (
-  <tr className="transition hover:bg-slate-800/40">
-    <td className="px-4 py-3">
-      <div className="font-medium text-slate-100">{expertise.expertiseName}</div>
-      {expertise.description && (
-        <p className="mt-1 text-xs text-slate-400">{expertise.description}</p>
-      )}
-      <div className="mt-2 flex flex-wrap gap-2">
-        <Badge color="emerald">Niveau {expertise.level} / 5</Badge>
-        {expertise.category && <Badge color="violet">{expertise.category}</Badge>}
-        {expertise.lastUsed && (
-          <Badge color="slate">Dernière utilisation : {expertise.lastUsed}</Badge>
+export const ExpertiseRow = ({ expertise }: ExpertiseRowProps) =>
+  Object.assign(
+    <tr className="transition hover:bg-slate-800/40">
+      <td className="px-4 py-3">
+        <div className="font-medium text-slate-100">{expertise.expertiseName}</div>
+        {expertise.description && (
+          <p className="mt-1 text-xs text-slate-400">{expertise.description}</p>
         )}
-      </div>
-    </td>
-    <td className="px-4 py-3">
-      <div className="flex flex-wrap gap-2">
-        {expertise.rolesPriority.map((role) => (
-          <Badge key={role} color="sky">
-            {role}
-          </Badge>
-        ))}
-      </div>
-    </td>
-    <td className="px-4 py-3 text-right">
-      <Link
-        href={`/admin/expertises/${expertise._id}/edit`}
-        className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
-      >
-        Éditer
-      </Link>
-    </td>
-  </tr>
-);
+        <div className="mt-2 flex flex-wrap gap-2">
+          <Badge color="emerald">Niveau {expertise.level} / 5</Badge>
+          {expertise.category && <Badge color="violet">{expertise.category}</Badge>}
+          {expertise.lastUsed && (
+            <Badge color="slate">Dernière utilisation : {expertise.lastUsed}</Badge>
+          )}
+        </div>
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex flex-wrap gap-2">
+          {expertise.rolesPriority.map((role) => (
+            <Badge key={role} color="sky">
+              {role}
+            </Badge>
+          ))}
+        </div>
+      </td>
+      <td className="px-4 py-3 text-right">
+        <Link
+          href={`/admin/expertises/${expertise._id}/edit`}
+          className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
+        >
+          Éditer
+        </Link>
+      </td>
+    </tr>,
+    {
+      mobileCard: (
+        <div className="space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-base font-semibold text-slate-100">{expertise.expertiseName}</div>
+              {expertise.description && (
+                <p className="mt-1 text-xs text-slate-400">{expertise.description}</p>
+              )}
+            </div>
+            <Link
+              href={`/admin/expertises/${expertise._id}/edit`}
+              className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
+            >
+              Éditer
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Badge color="emerald">Niveau {expertise.level} / 5</Badge>
+            {expertise.category && <Badge color="violet">{expertise.category}</Badge>}
+            {expertise.lastUsed && (
+              <Badge color="slate">Dernière utilisation : {expertise.lastUsed}</Badge>
+            )}
+          </div>
+          {expertise.rolesPriority.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                Rôles prioritaires
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {expertise.rolesPriority.map((role) => (
+                  <Badge key={role} color="sky">
+                    {role}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ),
+    },
+  );
 
 export default ExpertiseRow;

@@ -11,26 +11,52 @@ interface JobRowProps {
 const formatCount = (items?: unknown[]) => (items ? items.length : 0);
 
 export const JobRow = ({ job }: JobRowProps) => (
-  <tr className="transition hover:bg-slate-800/40">
-    <td className="px-4 py-3">
-      <div className="font-medium text-slate-100">{job.positionName}</div>
-      {job.subtitle && <p className="mt-1 text-xs text-slate-400">{job.subtitle}</p>}
-    </td>
-    <td className="px-4 py-3">
-      <div className="flex flex-wrap gap-2">
-        <Badge color="emerald">Compétences : {formatCount(job.requiredSkills)}</Badge>
-        <Badge color="violet">Projets : {formatCount(job.projects)}</Badge>
-      </div>
-    </td>
-    <td className="px-4 py-3 text-right">
-      <Link
-        href={`/admin/jobs/${job._id}/edit`}
-        className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
-      >
-        Éditer
-      </Link>
-    </td>
-  </tr>
+  Object.assign(
+    <tr className="transition hover:bg-slate-800/40">
+      <td className="px-4 py-3">
+        <div className="font-medium text-slate-100">{job.positionName}</div>
+        {job.subtitle && <p className="mt-1 text-xs text-slate-400">{job.subtitle}</p>}
+      </td>
+      <td className="px-4 py-3">
+        <div className="flex flex-wrap gap-2">
+          <Badge color="emerald">Compétences : {formatCount(job.requiredSkills)}</Badge>
+          <Badge color="violet">Projets : {formatCount(job.projects)}</Badge>
+        </div>
+      </td>
+      <td className="px-4 py-3 text-right">
+        <Link
+          href={`/admin/jobs/${job._id}/edit`}
+          className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
+        >
+          Éditer
+        </Link>
+      </td>
+    </tr>,
+    {
+      mobileCard: (
+        <div className="space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <div className="text-base font-semibold text-slate-100">{job.positionName}</div>
+              {job.subtitle && (
+                <p className="mt-1 text-xs text-slate-400">{job.subtitle}</p>
+              )}
+            </div>
+            <Link
+              href={`/admin/jobs/${job._id}/edit`}
+              className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
+            >
+              Éditer
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Badge color="emerald">Compétences : {formatCount(job.requiredSkills)}</Badge>
+            <Badge color="violet">Projets : {formatCount(job.projects)}</Badge>
+          </div>
+        </div>
+      ),
+    },
+  )
 );
 
 export default JobRow;

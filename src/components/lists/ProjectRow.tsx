@@ -15,75 +15,165 @@ export const ProjectRow = ({
   expertiseNames = [],
   toolNames = [],
 }: ProjectRowProps) => (
-  <tr className="transition hover:bg-slate-800/40">
-    <td className="px-4 py-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="font-medium text-slate-100">{project.projectName}</div>
-        {project.isKeyProjet && <Badge color="gold">Projet clé</Badge>}
-      </div>
-      {project.shortDescription && (
-        <p className="mt-1 text-xs text-slate-400">{project.shortDescription}</p>
-      )}
-    </td>
-    <td className="px-4 py-3 text-slate-200">{project.year}</td>
-    <td className="px-4 py-3">
-      <div className="flex flex-wrap gap-2">
-        {project.roles.map((role) => (
-          <Badge key={role} color="sky">
-            {role}
-          </Badge>
-        ))}
-      </div>
-    </td>
-    <td className="px-4 py-3">
-      {expertiseNames.length > 0 ? (
+  Object.assign(
+    <tr className="transition hover:bg-slate-800/40">
+      <td className="px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="font-medium text-slate-100">{project.projectName}</div>
+          {project.isKeyProjet && <Badge color="gold">Projet clé</Badge>}
+        </div>
+        {project.shortDescription && (
+          <p className="mt-1 text-xs text-slate-400">{project.shortDescription}</p>
+        )}
+      </td>
+      <td className="px-4 py-3 text-slate-200">{project.year}</td>
+      <td className="px-4 py-3">
         <div className="flex flex-wrap gap-2">
-          {expertiseNames.map((expertise) => (
-            <Badge key={expertise} color="violet">
-              {expertise}
+          {project.roles.map((role) => (
+            <Badge key={role} color="sky">
+              {role}
             </Badge>
           ))}
         </div>
-      ) : (
-        <span className="text-xs text-slate-400">Non renseigné</span>
-      )}
-    </td>
-    <td className="px-4 py-3">
-      {toolNames.length > 0 ? (
-        <div className="flex flex-wrap gap-2">
-          {toolNames.map((tool) => (
-            <Badge key={tool} color="pearl">
-              {tool}
-            </Badge>
-          ))}
+      </td>
+      <td className="px-4 py-3">
+        {expertiseNames.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {expertiseNames.map((expertise) => (
+              <Badge key={expertise} color="violet">
+                {expertise}
+              </Badge>
+            ))}
+          </div>
+        ) : (
+          <span className="text-xs text-slate-400">Non renseigné</span>
+        )}
+      </td>
+      <td className="px-4 py-3">
+        {toolNames.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {toolNames.map((tool) => (
+              <Badge key={tool} color="pearl">
+                {tool}
+              </Badge>
+            ))}
+          </div>
+        ) : (
+          <span className="text-xs text-slate-400">Non renseigné</span>
+        )}
+      </td>
+      <td className="px-4 py-3">
+        {project.fireFacts.length > 0 ? (
+          <ul className="space-y-1 text-xs text-slate-200">
+            {project.fireFacts.map((fact, index) => (
+              <li key={`${fact}-${index}`} className="flex items-start gap-2">
+                <span className="mt-1 inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+                <span>{fact}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <span className="text-xs text-slate-400">Non renseigné</span>
+        )}
+      </td>
+      <td className="px-4 py-3 text-right">
+        <Link
+          href={`/admin/projects/${project._id}/edit`}
+          className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
+        >
+          Éditer
+        </Link>
+      </td>
+    </tr>,
+    {
+      mobileCard: (
+        <div className="space-y-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="text-base font-semibold text-slate-100">{project.projectName}</div>
+                {project.isKeyProjet && <Badge color="gold">Projet clé</Badge>}
+              </div>
+              {project.shortDescription && (
+                <p className="text-xs text-slate-400">{project.shortDescription}</p>
+              )}
+            </div>
+            <div className="text-sm font-medium text-slate-300">{project.year}</div>
+          </div>
+
+          <div className="space-y-3 text-xs">
+            <div className="space-y-1">
+              <p className="font-medium uppercase tracking-wide text-slate-400">Rôles</p>
+              <div className="flex flex-wrap gap-2">
+                {project.roles.map((role) => (
+                  <Badge key={role} color="sky">
+                    {role}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <p className="font-medium uppercase tracking-wide text-slate-400">Expertises</p>
+              {expertiseNames.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {expertiseNames.map((expertise) => (
+                    <Badge key={expertise} color="violet">
+                      {expertise}
+                    </Badge>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-slate-400">Non renseigné</span>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <p className="font-medium uppercase tracking-wide text-slate-400">Outils</p>
+              {toolNames.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {toolNames.map((tool) => (
+                    <Badge key={tool} color="pearl">
+                      {tool}
+                    </Badge>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-slate-400">Non renseigné</span>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <p className="font-medium uppercase tracking-wide text-slate-400">
+                Top Facts & Figures
+              </p>
+              {project.fireFacts.length > 0 ? (
+                <ul className="space-y-1 text-slate-200">
+                  {project.fireFacts.map((fact, index) => (
+                    <li key={`${fact}-${index}`} className="flex items-start gap-2">
+                      <span className="mt-1 inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+                      <span>{fact}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span className="text-slate-400">Non renseigné</span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            <Link
+              href={`/admin/projects/${project._id}/edit`}
+              className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
+            >
+              Éditer
+            </Link>
+          </div>
         </div>
-      ) : (
-        <span className="text-xs text-slate-400">Non renseigné</span>
-      )}
-    </td>
-    <td className="px-4 py-3">
-      {project.fireFacts.length > 0 ? (
-        <ul className="space-y-1 text-xs text-slate-200">
-          {project.fireFacts.map((fact, index) => (
-            <li key={`${fact}-${index}`} className="flex items-start gap-2">
-              <span className="mt-1 inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
-              <span>{fact}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <span className="text-xs text-slate-400">Non renseigné</span>
-      )}
-    </td>
-    <td className="px-4 py-3 text-right">
-      <Link
-        href={`/admin/projects/${project._id}/edit`}
-        className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
-      >
-        Éditer
-      </Link>
-    </td>
-  </tr>
+      ),
+    },
+  )
 );
 
 export default ProjectRow;
