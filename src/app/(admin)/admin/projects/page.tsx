@@ -5,6 +5,7 @@ import Link from "next/link";
 import PageHeader from "@/components/ui/PageHeader";
 import Table from "@/components/lists/Table";
 import ProjectRow from "@/components/lists/ProjectRow";
+import ProjectCard from "@/components/lists/cards/ProjectCard";
 import EmptyState from "@/components/ui/EmptyState";
 import { useProjects } from "@/hooks/useProjects";
 import { useExpertises } from "@/hooks/useExpertises";
@@ -44,6 +45,17 @@ export default function ProjectsPage() {
 
   const isLoading = projectsLoading || expertisesLoading || toolsLoading;
   const error = projectsError ?? expertisesError ?? toolsError;
+
+  const projectItems = projects.map((project) => {
+    const expertiseNames = (project.expertises ?? [])
+      .map((expertiseId) => expertiseMap.get(expertiseId))
+      .filter((name): name is string => Boolean(name));
+    const toolNames = (project.tools ?? [])
+      .map((toolId) => toolMap.get(toolId))
+      .filter((name): name is string => Boolean(name));
+
+    return { project, expertiseNames, toolNames };
+  });
 
   return (
     <div className="space-y-6">
@@ -87,7 +99,7 @@ export default function ProjectsPage() {
         />
       )}
 
-      {!isLoading && !error && projects.length > 0 && (
+      {!isLoading && !error && projectItems.length > 0 && (
         <Table
           headers={[
             "Nom",
@@ -98,24 +110,23 @@ export default function ProjectsPage() {
             "Top Facts & Figures",
             "Actions",
           ]}
+          mobileCards={projectItems.map(({ project, expertiseNames, toolNames }) => (
+            <ProjectCard
+              key={`card-${project._id}`}
+              project={project}
+              expertiseNames={expertiseNames}
+              toolNames={toolNames}
+            />
+          ))}
         >
-          {projects.map((project) => {
-            const expertiseNames = (project.expertises ?? [])
-              .map((expertiseId) => expertiseMap.get(expertiseId))
-              .filter((name): name is string => Boolean(name));
-            const toolNames = (project.tools ?? [])
-              .map((toolId) => toolMap.get(toolId))
-              .filter((name): name is string => Boolean(name));
-
-            return (
-              <ProjectRow
-                key={project._id}
-                project={project}
-                expertiseNames={expertiseNames}
-                toolNames={toolNames}
-              />
-            );
-          })}
+          {projectItems.map(({ project, expertiseNames, toolNames }) => (
+            <ProjectRow
+              key={project._id}
+              project={project}
+              expertiseNames={expertiseNames}
+              toolNames={toolNames}
+            />
+          ))}
         </Table>
       )}
     </div>

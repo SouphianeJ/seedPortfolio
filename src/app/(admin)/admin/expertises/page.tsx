@@ -5,6 +5,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import Table from "@/components/lists/Table";
 import ExpertiseRow from "@/components/lists/ExpertiseRow";
+import ExpertiseCard from "@/components/lists/cards/ExpertiseCard";
 import { useExpertises } from "@/hooks/useExpertises";
 
 const buttonClasses =
@@ -56,7 +57,12 @@ export default function ExpertisesPage() {
       )}
 
       {!isLoading && !error && expertises.length > 0 && (
-        <Table headers={["Expertise", "Rôles prioritaires", "Actions"]}>
+        <Table
+          headers={["Expertise", "Rôles prioritaires", "Actions"]}
+          mobileCards={expertises.map((expertise) => (
+            <ExpertiseCard key={`card-${expertise._id}`} expertise={expertise} />
+          ))}
+        >
           {expertises.map((expertise) => (
             <ExpertiseRow key={expertise._id} expertise={expertise} />
           ))}

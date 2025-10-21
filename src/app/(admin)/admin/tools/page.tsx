@@ -5,6 +5,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import Table from "@/components/lists/Table";
 import ToolRow from "@/components/lists/ToolRow";
+import ToolCard from "@/components/lists/cards/ToolCard";
 import { useTools } from "@/hooks/useTools";
 
 const buttonClasses =
@@ -56,7 +57,12 @@ export default function ToolsPage() {
       )}
 
       {!isLoading && !error && tools.length > 0 && (
-        <Table headers={["Outil", "Niveau", "Usage", "Actions"]}>
+        <Table
+          headers={["Outil", "Niveau", "Usage", "Actions"]}
+          mobileCards={tools.map((tool) => (
+            <ToolCard key={`card-${tool._id}`} tool={tool} />
+          ))}
+        >
           {tools.map((tool) => (
             <ToolRow key={tool._id} tool={tool} />
           ))}

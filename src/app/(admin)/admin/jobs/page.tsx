@@ -5,6 +5,7 @@ import PageHeader from "@/components/ui/PageHeader";
 import EmptyState from "@/components/ui/EmptyState";
 import Table from "@/components/lists/Table";
 import JobRow from "@/components/lists/JobRow";
+import JobCard from "@/components/lists/cards/JobCard";
 import { useJobs } from "@/hooks/useJobs";
 
 const buttonClasses =
@@ -56,7 +57,12 @@ export default function JobsPage() {
       )}
 
       {!isLoading && !error && jobs.length > 0 && (
-        <Table headers={["Poste", "Synthèse", "Actions"]}>
+        <Table
+          headers={["Poste", "Synthèse", "Actions"]}
+          mobileCards={jobs.map((job) => (
+            <JobCard key={`card-${job._id}`} job={job} />
+          ))}
+        >
           {jobs.map((job) => (
             <JobRow key={job._id} job={job} />
           ))}
