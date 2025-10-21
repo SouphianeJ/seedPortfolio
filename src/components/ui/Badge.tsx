@@ -16,7 +16,7 @@ const colorMap: Record<NonNullable<BadgeProps["color"]>, string> = {
 
 export const Badge = ({ children, color = "slate" }: BadgeProps) => (
   <span
-    className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${colorMap[color]}`}
+    className={`inline-flex items-center justify-center whitespace-pre-line break-words rounded-full border px-3 py-1 text-xs font-medium leading-tight text-center ${colorMap[color]}`}
   >
     {children}
   </span>

@@ -105,6 +105,15 @@ export const parseProjectCreate = async (
       : undefined;
   await assertExpertisesExist(expertiseIds, "expertises");
 
+  let isKeyProjet = false;
+  if ("isKeyProjet" in body) {
+    if (typeof body.isKeyProjet === "boolean") {
+      isKeyProjet = body.isKeyProjet;
+    } else if (body.isKeyProjet != null) {
+      throw new BadRequestError("Le champ isKeyProjet doit être un booléen.");
+    }
+  }
+
   return {
     projectName,
     year: yearValue,
@@ -112,6 +121,7 @@ export const parseProjectCreate = async (
     expertises: expertiseIds,
     thumbnailPic,
     shortDescription,
+    isKeyProjet,
   };
 };
 
@@ -161,6 +171,16 @@ export const parseProjectUpdate = async (
       const expertiseIds = toObjectIdArray(body.expertises, "expertises");
       await assertExpertisesExist(expertiseIds, "expertises");
       payload.expertises = expertiseIds;
+    }
+  }
+
+  if ("isKeyProjet" in body) {
+    if (typeof body.isKeyProjet === "boolean") {
+      payload.isKeyProjet = body.isKeyProjet;
+    } else if (body.isKeyProjet == null) {
+      payload.isKeyProjet = false;
+    } else {
+      throw new BadRequestError("Le champ isKeyProjet doit être un booléen.");
     }
   }
 
