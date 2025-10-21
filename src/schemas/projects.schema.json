@@ -12,6 +12,13 @@
       "uniqueItems": true,
       "default": []
     },
+    "expertises": {
+      "type": "array",
+      "title": "Expertises mobilisées",
+      "items": { "type": "string" },
+      "uniqueItems": true,
+      "default": []
+    },
     "thumbnailPic": { "type": "string", "title": "Vignette (URL)" },
     "shortDescription": { "type": "string", "title": "Résumé" }
   },

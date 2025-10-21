@@ -1,6 +1,7 @@
-import { jobpositions } from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
+import { expertises, jobpositions } from "@/lib/mongodb";
 import type { CreateProjectPayload, RoleKey, UpdateProjectPayload } from "@/lib/types";
-import { BadRequestError } from "@/lib/parsers/objectid";
+import { BadRequestError, toObjectIdArray } from "@/lib/parsers/objectid";
 
 const getRoleSet = async (): Promise<Set<string>> => {
   const collection = await jobpositions();
@@ -53,6 +54,23 @@ const parseRoles = (
   return parsed;
 };
 
+const assertExpertisesExist = async (
+  ids: ObjectId[] | undefined,
+  field: string,
+) => {
+  if (!ids?.length) {
+    return;
+  }
+
+  const collection = await expertises();
+  const count = await collection.countDocuments({ _id: { $in: ids } });
+  if (count !== ids.length) {
+    throw new BadRequestError(
+      `Certaines expertises référencées dans ${field} n'existent pas en base.`,
+    );
+  }
+};
+
 export const parseProjectCreate = async (
   body: Record<string, unknown>,
 ): Promise<CreateProjectPayload> => {
@@ -81,10 +99,17 @@ export const parseProjectCreate = async (
       ? body.shortDescription.trim()
       : undefined;
 
+  const expertiseIds =
+    body.expertises != null
+      ? toObjectIdArray(body.expertises, "expertises")
+      : undefined;
+  await assertExpertisesExist(expertiseIds, "expertises");
+
   return {
     projectName,
     year: yearValue,
     roles: parsedRoles,
+    expertises: expertiseIds,
     thumbnailPic,
     shortDescription,
   };
@@ -127,6 +152,16 @@ export const parseProjectUpdate = async (
 
   if ("shortDescription" in body && typeof body.shortDescription === "string") {
     payload.shortDescription = body.shortDescription.trim() || undefined;
+  }
+
+  if ("expertises" in body) {
+    if (body.expertises == null) {
+      payload.expertises = undefined;
+    } else {
+      const expertiseIds = toObjectIdArray(body.expertises, "expertises");
+      await assertExpertisesExist(expertiseIds, "expertises");
+      payload.expertises = expertiseIds;
+    }
   }
 
   return payload;

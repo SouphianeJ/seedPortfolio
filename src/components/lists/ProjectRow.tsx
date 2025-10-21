@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
-import type { ProjectDoc, WithStringId } from "@/lib/types";
+import type { SerializedProject } from "@/lib/serializers";
 
 interface ProjectRowProps {
-  project: WithStringId<ProjectDoc>;
+  project: SerializedProject;
 }
 
 export const ProjectRow = ({ project }: ProjectRowProps) => (

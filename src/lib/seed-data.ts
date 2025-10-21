@@ -4,7 +4,10 @@ import type { ExpertiseDoc, JobPositionDoc, ProjectDoc } from "@/lib/types";
  *  Dans les seeds: string pour _id et pour les refs (convertis dans les mappers).
  *  lastUsed reste string (format YYYY-MM-DD) conformément aux types + JSON Schema.
  */
-export type SeedProject = Omit<ProjectDoc, "_id"> & { _id: string };
+export type SeedProject = Omit<ProjectDoc, "_id" | "expertises"> & {
+  _id: string;
+  expertises?: string[];
+};
 export type SeedExpertise = Omit<ExpertiseDoc, "_id"> & { _id: string };
 export type SeedJobPosition = Omit<JobPositionDoc, "_id" | "requiredSkills" | "projects"> & {
   _id: string;
@@ -24,6 +27,7 @@ export const projectSeeds: SeedProject[] = [
     projectName: "Synergy Studio LMS",
     year: 2024,
     roles: ["Ingénierie pédagogique", "Administrateur Moodle", "Chef de projet"],
+    expertises: ["66f8a0c5e1a1d2f3a4b5c6e1", "66f8a0c5e1a1d2f3a4b5c6e2"],
     thumbnailPic: "/thumbs/synergy-studio.png",
     shortDescription:
       "Refonte d'une plateforme Moodle avec une charte unifiée et des parcours adaptatifs.",
@@ -33,6 +37,7 @@ export const projectSeeds: SeedProject[] = [
     projectName: "Campus Connect",
     year: 2023,
     roles: ["Administrateur Moodle", "Développeur web"],
+    expertises: ["66f8a0c5e1a1d2f3a4b5c6e2", "66f8a0c5e1a1d2f3a4b5c6e3"],
     thumbnailPic: "/thumbs/campus-connect.png",
     shortDescription:
       "Industrialisation des déploiements Moodle et automatisation de l'onboarding des formateurs.",
@@ -42,6 +47,7 @@ export const projectSeeds: SeedProject[] = [
     projectName: "Data Navigator",
     year: 2022,
     roles: ["Développeur web", "Chef de projet"],
+    expertises: ["66f8a0c5e1a1d2f3a4b5c6e3", "66f8a0c5e1a1d2f3a4b5c6e4"],
     thumbnailPic: "/thumbs/data-navigator.png",
     shortDescription:
       "Catalogue de données pédagogiques avec tableaux de bord pour suivre la progression des apprenants.",

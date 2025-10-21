@@ -14,6 +14,7 @@ export interface ProjectDoc {
   projectName: string;
   year: number;
   roles: RoleKey[];
+  expertises?: ObjectId[];
   thumbnailPic?: string;
   shortDescription?: string;
 }
@@ -42,7 +43,7 @@ export interface JobPositionDoc {
 
 export type CreateProjectPayload = Pick<
   ProjectDoc,
-  "projectName" | "year" | "roles" | "thumbnailPic" | "shortDescription"
+  "projectName" | "year" | "roles" | "expertises" | "thumbnailPic" | "shortDescription"
 >;
 
 export type UpdateProjectPayload = Partial<CreateProjectPayload>;
