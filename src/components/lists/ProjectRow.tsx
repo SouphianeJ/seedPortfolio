@@ -15,7 +15,7 @@ export const ProjectRow = ({ project, expertiseNames = [] }: ProjectRowProps) =>
       <div className="flex flex-wrap items-center gap-2">
         <div className="font-medium text-slate-100">{project.projectName}</div>
         {project.isKeyProjet && (
-          <Badge color="emerald">Projet clé</Badge>
+          <Badge color="gold">Projet clé</Badge>
         )}
       </div>
       {project.shortDescription && (
