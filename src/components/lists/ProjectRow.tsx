@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
+import ExpandableText from "@/components/ui/ExpandableText";
 import type { SerializedProject } from "@/lib/serializers";
 
 interface ProjectRowProps {
@@ -22,7 +23,10 @@ export const ProjectRow = ({
         {project.isKeyProjet && <Badge color="gold">Projet clé</Badge>}
       </div>
       {project.shortDescription && (
-        <p className="mt-1 text-xs text-slate-400">{project.shortDescription}</p>
+        <ExpandableText
+          text={project.shortDescription}
+          className="mt-1 text-xs text-slate-400"
+        />
       )}
     </td>
     <td className="px-4 py-3 text-slate-200" data-label="Année">

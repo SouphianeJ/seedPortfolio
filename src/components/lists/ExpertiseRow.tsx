@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
+import ExpandableText from "@/components/ui/ExpandableText";
 import type { ExpertiseDoc, WithStringId } from "@/lib/types";
 
 interface ExpertiseRowProps {
@@ -13,7 +14,10 @@ export const ExpertiseRow = ({ expertise }: ExpertiseRowProps) => (
     <td className="px-4 py-3" data-label="Expertise">
       <div className="font-medium text-slate-100">{expertise.expertiseName}</div>
       {expertise.description && (
-        <p className="mt-1 text-xs text-slate-400">{expertise.description}</p>
+        <ExpandableText
+          text={expertise.description}
+          className="mt-1 text-xs text-slate-400"
+        />
       )}
       <div className="mt-2 flex flex-wrap gap-2">
         <Badge color="emerald">Niveau {expertise.level} / 5</Badge>

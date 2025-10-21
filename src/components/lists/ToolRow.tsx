@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
+import ExpandableText from "@/components/ui/ExpandableText";
 import type { ToolDoc, WithStringId } from "@/lib/types";
 
 interface ToolRowProps {
@@ -13,7 +14,10 @@ export const ToolRow = ({ tool }: ToolRowProps) => (
     <td className="px-4 py-3" data-label="Outil">
       <div className="font-medium text-slate-100">{tool.toolName}</div>
       {tool.description && (
-        <p className="mt-1 text-xs text-slate-400">{tool.description}</p>
+        <ExpandableText
+          text={tool.description}
+          className="mt-1 text-xs text-slate-400"
+        />
       )}
     </td>
     <td className="px-4 py-3" data-label="Niveau">
@@ -21,7 +25,10 @@ export const ToolRow = ({ tool }: ToolRowProps) => (
     </td>
     <td className="px-4 py-3" data-label="Usage">
       {tool.usage ? (
-        <p className="text-xs text-slate-300">{tool.usage}</p>
+        <ExpandableText
+          text={tool.usage}
+          className="text-xs text-slate-300"
+        />
       ) : (
         <span className="text-xs text-slate-400">Non renseigné</span>
       )}
