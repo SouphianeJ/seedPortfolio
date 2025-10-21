@@ -23,3 +23,71 @@ body {
 a {
   color: inherit;
 }
+
+@layer components {
+  .responsive-table {
+    border-radius: 0.75rem;
+    border: 1px solid rgb(30 41 59 / 1);
+    overflow: hidden;
+  }
+
+  .responsive-table .table-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .responsive-table {
+    border: none;
+    overflow: visible;
+    border-radius: 0;
+  }
+
+  .responsive-table .table-container {
+    overflow: visible;
+  }
+
+  .responsive-table table {
+    display: block;
+    width: 100%;
+  }
+
+  .responsive-table thead {
+    display: none;
+  }
+
+  .responsive-table tbody {
+    display: grid;
+    gap: 1rem;
+    padding: 0.5rem;
+    background-color: transparent;
+  }
+
+  .responsive-table tr {
+    display: grid;
+    gap: 0.75rem;
+    border: 1px solid rgb(30 41 59 / 1);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    background-color: rgb(15 23 42 / 0.75);
+    box-shadow: 0 10px 25px -15px rgb(15 23 42 / 0.7);
+  }
+
+  .responsive-table td {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .responsive-table td::before {
+    content: attr(data-label);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(148 163 184 / 1);
+  }
+
+  .responsive-table td[data-align="end"] {
+    justify-items: end;
+  }
+}
