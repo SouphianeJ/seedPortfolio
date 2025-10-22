@@ -13,7 +13,7 @@ export const Table = ({ headers, children, emptyMessage }: TableProps) => {
 
   if (isEmpty && emptyMessage) {
     return (
-      <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-6 text-center text-sm text-slate-300">
+      <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3 text-center text-sm text-slate-300 sm:p-6">
         {emptyMessage}
       </div>
     );
@@ -26,7 +26,7 @@ export const Table = ({ headers, children, emptyMessage }: TableProps) => {
           <thead className="bg-slate-900 text-left uppercase tracking-wide text-slate-400">
             <tr>
               {headers.map((header, index) => (
-                <th key={index} className="px-4 py-3 font-medium">
+                <th key={index} className="px-2 py-2 font-medium sm:px-4 sm:py-3">
                   {header}
                 </th>
               ))}

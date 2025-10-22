@@ -11,7 +11,7 @@ interface ExpertiseRowProps {
 
 export const ExpertiseRow = ({ expertise }: ExpertiseRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
-    <td className="px-4 py-3" data-label="Expertise">
+    <td className="px-2 py-3 sm:px-4" data-label="Expertise">
       <div className="font-medium text-slate-100">{expertise.expertiseName}</div>
       {expertise.description && (
         <ExpandableText
@@ -27,7 +27,7 @@ export const ExpertiseRow = ({ expertise }: ExpertiseRowProps) => (
         )}
       </div>
     </td>
-    <td className="px-4 py-3" data-label="Rôles prioritaires">
+    <td className="px-2 py-3 sm:px-4" data-label="Rôles prioritaires">
       <div className="flex flex-wrap gap-2">
         {expertise.rolesPriority.map((role) => (
           <Badge key={role} color="sky">
@@ -36,7 +36,7 @@ export const ExpertiseRow = ({ expertise }: ExpertiseRowProps) => (
         ))}
       </div>
     </td>
-    <td className="px-4 py-3 text-right" data-label="Actions" data-align="end">
+    <td className="px-2 py-3 text-right sm:px-4" data-label="Actions" data-align="end">
       <Link
         href={`/admin/expertises/${expertise._id}/edit`}
         className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
