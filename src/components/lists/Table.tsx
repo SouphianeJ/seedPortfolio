@@ -26,7 +26,7 @@ export const Table = ({ headers, children, emptyMessage }: TableProps) => {
           <thead className="bg-slate-900 text-left uppercase tracking-wide text-slate-400">
             <tr>
               {headers.map((header, index) => (
-                <th key={index} className="px-3 py-2 font-medium sm:px-4 sm:py-3">
+                <th key={index} className="px-2 py-2 font-medium sm:px-4 sm:py-3">
                   {header}
                 </th>
               ))}

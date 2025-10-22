@@ -11,7 +11,7 @@ interface ToolRowProps {
 
 export const ToolRow = ({ tool }: ToolRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
-    <td className="px-3 py-3 sm:px-4" data-label="Outil">
+    <td className="px-2 py-3 sm:px-4" data-label="Outil">
       <div className="font-medium text-slate-100">{tool.toolName}</div>
       {tool.description && (
         <ExpandableText
@@ -20,10 +20,10 @@ export const ToolRow = ({ tool }: ToolRowProps) => (
         />
       )}
     </td>
-    <td className="px-3 py-3 sm:px-4" data-label="Niveau">
+    <td className="px-2 py-3 sm:px-4" data-label="Niveau">
       <Badge color="emerald">Niveau {tool.level} / 5</Badge>
     </td>
-    <td className="px-3 py-3 sm:px-4" data-label="Usage">
+    <td className="px-2 py-3 sm:px-4" data-label="Usage">
       {tool.usage ? (
         <ExpandableText
           text={tool.usage}
@@ -33,7 +33,7 @@ export const ToolRow = ({ tool }: ToolRowProps) => (
         <span className="text-xs text-slate-400">Non renseigné</span>
       )}
     </td>
-    <td className="px-3 py-3 text-right sm:px-4" data-label="Actions" data-align="end">
+    <td className="px-2 py-3 text-right sm:px-4" data-label="Actions" data-align="end">
       <Link
         href={`/admin/tools/${tool._id}/edit`}
         className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
