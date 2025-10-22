@@ -7,12 +7,14 @@ import type { SerializedProject } from "@/lib/serializers";
 
 interface ProjectRowProps {
   project: SerializedProject;
+  roleNames?: string[];
   expertiseNames?: string[];
   toolNames?: string[];
 }
 
 export const ProjectRow = ({
   project,
+  roleNames = [],
   expertiseNames = [],
   toolNames = [],
 }: ProjectRowProps) => (
@@ -33,13 +35,17 @@ export const ProjectRow = ({
       {project.year}
     </td>
     <td className="px-2 py-3 sm:px-4" data-label="Rôles">
-      <div className="flex flex-wrap gap-2">
-        {project.roles.map((role) => (
-          <Badge key={role} color="sky">
-            {role}
-          </Badge>
-        ))}
-      </div>
+      {roleNames.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {roleNames.map((role) => (
+            <Badge key={role} color="sky">
+              {role}
+            </Badge>
+          ))}
+        </div>
+      ) : (
+        <span className="text-xs text-slate-400">Non renseigné</span>
+      )}
     </td>
     <td className="px-2 py-3 sm:px-4" data-label="Expertises">
       {expertiseNames.length > 0 ? (

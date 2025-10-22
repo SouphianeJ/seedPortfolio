@@ -1,6 +1,5 @@
 import type {
   CreateExpertisePayload,
-  RoleKey,
   SkillCategory,
   UpdateExpertisePayload,
 } from "@/lib/types";
@@ -69,7 +68,7 @@ const parseRoles = (
   roles: Set<string>,
   field: string,
   { required }: { required: boolean },
-): RoleKey[] | undefined => {
+): string[] | undefined => {
   if (value == null) {
     if (required) {
       throw new BadRequestError(`Le champ ${field} est requis.`);
@@ -83,7 +82,7 @@ const parseRoles = (
     throw new BadRequestError(`Au moins un rôle est requis pour ${field}.`);
   }
   const seen = new Set<string>();
-  const parsed: RoleKey[] = [];
+  const parsed: string[] = [];
   value.forEach((entry, index) => {
     if (typeof entry !== "string" || !roles.has(entry)) {
       throw new BadRequestError(
@@ -92,7 +91,7 @@ const parseRoles = (
     }
     if (!seen.has(entry)) {
       seen.add(entry);
-      parsed.push(entry as RoleKey);
+      parsed.push(entry as string);
     }
   });
   return parsed;
