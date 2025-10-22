@@ -11,6 +11,12 @@ interface ExpandableTextProps {
 const SENTENCE_END_REGEX = /[.!?…]+(?=\s|$)/g;
 const FALLBACK_CHARACTER_LIMIT = 180;
 
+const isWhitespace = (character: string | undefined) =>
+  character !== undefined && /\s/.test(character);
+
+const trimTrailingPunctuation = (value: string) =>
+  value.replace(/[\-–—,:;]+$/u, "").trimEnd();
+
 const computeFallbackPreview = (text: string) => {
   if (text.length <= FALLBACK_CHARACTER_LIMIT) {
     return { preview: text, truncated: false } as const;
@@ -18,7 +24,7 @@ const computeFallbackPreview = (text: string) => {
 
   let endIndex = FALLBACK_CHARACTER_LIMIT;
 
-  while (endIndex > 0 && !/[\s\n]/.test(text[endIndex - 1])) {
+  while (endIndex > 0 && !isWhitespace(text[endIndex - 1])) {
     endIndex -= 1;
   }
 
@@ -26,7 +32,17 @@ const computeFallbackPreview = (text: string) => {
     endIndex = FALLBACK_CHARACTER_LIMIT;
   }
 
-  const preview = text.slice(0, endIndex).trimEnd();
+  let preview = text.slice(0, endIndex);
+
+  if (isWhitespace(text[endIndex])) {
+    preview = preview.trimEnd();
+  }
+
+  preview = trimTrailingPunctuation(preview);
+
+  if (!preview) {
+    preview = trimTrailingPunctuation(text.slice(0, FALLBACK_CHARACTER_LIMIT));
+  }
 
   return {
     preview,
@@ -62,9 +78,12 @@ const computePreview = (text: string, previewSentenceCount: number) => {
     endIndex += 1;
   }
 
+  const previewText = text.slice(0, endIndex);
+  const fallbackResult = computeFallbackPreview(previewText);
+
   return {
-    preview: text.slice(0, endIndex),
-    truncated,
+    preview: fallbackResult.preview,
+    truncated: true,
   };
 };
 
