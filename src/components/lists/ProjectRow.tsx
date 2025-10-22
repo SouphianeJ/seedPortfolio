@@ -17,7 +17,7 @@ export const ProjectRow = ({
   toolNames = [],
 }: ProjectRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
-    <td className="px-4 py-3" data-label="Nom">
+    <td className="px-3 py-3 sm:px-4" data-label="Nom">
       <div className="flex flex-wrap items-center gap-2">
         <div className="font-medium text-slate-100">{project.projectName}</div>
         {project.isKeyProjet && <Badge color="gold">Projet clé</Badge>}
@@ -29,10 +29,10 @@ export const ProjectRow = ({
         />
       )}
     </td>
-    <td className="px-4 py-3 text-slate-200" data-label="Année">
+    <td className="px-3 py-3 text-slate-200 sm:px-4" data-label="Année">
       {project.year}
     </td>
-    <td className="px-4 py-3" data-label="Rôles">
+    <td className="px-3 py-3 sm:px-4" data-label="Rôles">
       <div className="flex flex-wrap gap-2">
         {project.roles.map((role) => (
           <Badge key={role} color="sky">
@@ -41,7 +41,7 @@ export const ProjectRow = ({
         ))}
       </div>
     </td>
-    <td className="px-4 py-3" data-label="Expertises">
+    <td className="px-3 py-3 sm:px-4" data-label="Expertises">
       {expertiseNames.length > 0 ? (
         <div className="flex flex-wrap gap-2">
           {expertiseNames.map((expertise) => (
@@ -54,7 +54,7 @@ export const ProjectRow = ({
         <span className="text-xs text-slate-400">Non renseigné</span>
       )}
     </td>
-    <td className="px-4 py-3" data-label="Outils">
+    <td className="px-3 py-3 sm:px-4" data-label="Outils">
       {toolNames.length > 0 ? (
         <div className="flex flex-wrap gap-2">
           {toolNames.map((tool) => (
@@ -67,7 +67,7 @@ export const ProjectRow = ({
         <span className="text-xs text-slate-400">Non renseigné</span>
       )}
     </td>
-    <td className="px-4 py-3" data-label="Top Facts & Figures">
+    <td className="px-3 py-3 sm:px-4" data-label="Top Facts & Figures">
       {project.fireFacts.length > 0 ? (
         <ul className="space-y-1 text-xs text-slate-200">
           {project.fireFacts.map((fact, index) => (
@@ -81,7 +81,7 @@ export const ProjectRow = ({
         <span className="text-xs text-slate-400">Non renseigné</span>
       )}
     </td>
-    <td className="px-4 py-3 text-right" data-label="Actions" data-align="end">
+    <td className="px-3 py-3 text-right sm:px-4" data-label="Actions" data-align="end">
       <Link
         href={`/admin/projects/${project._id}/edit`}
         className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"

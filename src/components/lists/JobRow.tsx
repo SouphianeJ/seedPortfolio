@@ -13,7 +13,7 @@ const formatCount = (items?: unknown[]) => (items ? items.length : 0);
 
 export const JobRow = ({ job }: JobRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
-    <td className="px-4 py-3" data-label="Poste">
+    <td className="px-3 py-3 sm:px-4" data-label="Poste">
       <div className="font-medium text-slate-100">{job.positionName}</div>
       {job.subtitle && (
         <ExpandableText
@@ -22,13 +22,13 @@ export const JobRow = ({ job }: JobRowProps) => (
         />
       )}
     </td>
-    <td className="px-4 py-3" data-label="Synthèse">
+    <td className="px-3 py-3 sm:px-4" data-label="Synthèse">
       <div className="flex flex-wrap gap-2">
         <Badge color="emerald">Compétences : {formatCount(job.requiredSkills)}</Badge>
         <Badge color="violet">Projets : {formatCount(job.projects)}</Badge>
       </div>
     </td>
-    <td className="px-4 py-3 text-right" data-label="Actions" data-align="end">
+    <td className="px-3 py-3 text-right sm:px-4" data-label="Actions" data-align="end">
       <Link
         href={`/admin/jobs/${job._id}/edit`}
         className="inline-flex items-center rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-200 transition hover:border-sky-500 hover:text-sky-300"
