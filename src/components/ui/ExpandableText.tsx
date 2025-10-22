@@ -9,7 +9,7 @@ interface ExpandableTextProps {
 }
 
 const SENTENCE_END_REGEX = /[.!?…]+(?=\s|$)/g;
-const FALLBACK_CHARACTER_LIMIT = 320;
+const FALLBACK_CHARACTER_LIMIT = 180;
 
 const computeFallbackPreview = (text: string) => {
   if (text.length <= FALLBACK_CHARACTER_LIMIT) {
@@ -18,8 +18,12 @@ const computeFallbackPreview = (text: string) => {
 
   let endIndex = FALLBACK_CHARACTER_LIMIT;
 
-  while (endIndex < text.length && !/[\s\n]/.test(text[endIndex])) {
-    endIndex += 1;
+  while (endIndex > 0 && !/[\s\n]/.test(text[endIndex - 1])) {
+    endIndex -= 1;
+  }
+
+  if (endIndex === 0) {
+    endIndex = FALLBACK_CHARACTER_LIMIT;
   }
 
   const preview = text.slice(0, endIndex).trimEnd();
