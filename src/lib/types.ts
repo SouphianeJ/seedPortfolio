@@ -1,7 +1,5 @@
 import type { ObjectId } from "mongodb";
 
-export type RoleKey = string;
-
 export type SkillCategory =
   | "Gestion de projet"
   | "Ingénierie pédago"
@@ -13,7 +11,7 @@ export interface ProjectDoc {
   _id: ObjectId;
   projectName: string;
   year: number;
-  roles: RoleKey[];
+  roles: ObjectId[];
   expertises?: ObjectId[];
   tools?: ObjectId[];
   thumbnailPic?: string;
@@ -26,7 +24,7 @@ export interface ExpertiseDoc {
   _id: ObjectId;
   expertiseName: string;
   level: 1 | 2 | 3 | 4 | 5;
-  rolesPriority: RoleKey[];
+  rolesPriority: string[];
   description?: string;
   category?: SkillCategory;
   lastUsed?: string;

@@ -9,6 +9,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import { useProjects } from "@/hooks/useProjects";
 import { useExpertises } from "@/hooks/useExpertises";
 import { useTools } from "@/hooks/useTools";
+import { useJobs } from "@/hooks/useJobs";
 
 const buttonClasses =
   "inline-flex items-center rounded-md border border-sky-500 bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400";
@@ -19,6 +20,7 @@ export default function ProjectsPage() {
     isLoading: projectsLoading,
     error: projectsError,
   } = useProjects();
+  const { jobs, isLoading: jobsLoading, error: jobsError } = useJobs();
   const {
     expertises,
     isLoading: expertisesLoading,
@@ -42,8 +44,17 @@ export default function ProjectsPage() {
     return map;
   }, [tools]);
 
-  const isLoading = projectsLoading || expertisesLoading || toolsLoading;
-  const error = projectsError ?? expertisesError ?? toolsError;
+  const roleMap = useMemo(() => {
+    const map = new Map<string, string>();
+    jobs.forEach((job) => {
+      map.set(job._id, job.positionName);
+    });
+    return map;
+  }, [jobs]);
+
+  const isLoading =
+    projectsLoading || expertisesLoading || toolsLoading || jobsLoading;
+  const error = projectsError ?? expertisesError ?? toolsError ?? jobsError;
 
   return (
     <div className="space-y-6">
@@ -111,6 +122,9 @@ export default function ProjectsPage() {
               <ProjectRow
                 key={project._id}
                 project={project}
+                roleNames={project.roles.map(
+                  (roleId) => roleMap.get(roleId) ?? roleId,
+                )}
                 expertiseNames={expertiseNames}
                 toolNames={toolNames}
               />

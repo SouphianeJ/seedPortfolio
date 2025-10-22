@@ -1,15 +1,16 @@
 import { ObjectId } from "mongodb";
 import { expertises, jobpositions, tools as toolsCollection } from "@/lib/mongodb";
-import type { CreateProjectPayload, RoleKey, UpdateProjectPayload } from "@/lib/types";
+import type { CreateProjectPayload, UpdateProjectPayload } from "@/lib/types";
 import { BadRequestError, toObjectIdArray } from "@/lib/parsers/objectid";
+import { toObjectId } from "@/lib/ids";
 
-const getRoleSet = async (): Promise<Set<string>> => {
+const getRoleIdSet = async (): Promise<Set<string>> => {
   const collection = await jobpositions();
-  const cursor = collection.find({}, { projection: { positionName: 1 } });
+  const cursor = collection.find({}, { projection: { _id: 1 } });
   const roles = new Set<string>();
   for await (const document of cursor) {
-    if (document?.positionName) {
-      roles.add(document.positionName as string);
+    if (document?._id) {
+      roles.add(document._id.toString());
     }
   }
   return roles;
@@ -20,7 +21,7 @@ const parseRoles = (
   roles: Set<string>,
   field: string,
   { required }: { required: boolean },
-): RoleKey[] | undefined => {
+): ObjectId[] | undefined => {
   if (value == null) {
     if (required) {
       throw new BadRequestError(`Le champ ${field} est requis.`);
@@ -37,17 +38,17 @@ const parseRoles = (
   }
 
   const seen = new Set<string>();
-  const parsed: RoleKey[] = [];
+  const parsed: ObjectId[] = [];
 
   value.forEach((entry, index) => {
     if (typeof entry !== "string" || !roles.has(entry)) {
       throw new BadRequestError(
-        `Le rôle ${entry as string} (${field}[${index}]) est inconnu. Les rôles doivent exister dans JobPositions.`,
+        `L'identifiant de rôle ${entry as string} (${field}[${index}]) est inconnu. Les rôles doivent exister dans JobPositions.`,
       );
     }
     if (!seen.has(entry)) {
       seen.add(entry);
-      parsed.push(entry as RoleKey);
+      parsed.push(toObjectId(entry));
     }
   });
 
@@ -131,7 +132,7 @@ export const parseProjectCreate = async (
     throw new BadRequestError("L'année doit être un entier.");
   }
 
-  const roles = await getRoleSet();
+  const roles = await getRoleIdSet();
   const parsedRoles = parseRoles(body.roles, roles, "roles", { required: true }) ?? [];
 
   const thumbnailPic =
@@ -203,7 +204,7 @@ export const parseProjectUpdate = async (
   }
 
   if ("roles" in body) {
-    const roles = await getRoleSet();
+    const roles = await getRoleIdSet();
     payload.roles = parseRoles(body.roles, roles, "roles", { required: false });
   }
 
