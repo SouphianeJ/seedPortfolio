@@ -103,6 +103,6 @@ a {
   }
 
   .responsive-table td {
-    padding: 0;
+    padding: 0.25rem;
   }
 }
