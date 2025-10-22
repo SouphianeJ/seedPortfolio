@@ -9,6 +9,46 @@ interface ExpandableTextProps {
 }
 
 const SENTENCE_END_REGEX = /[.!?…]+(?=\s|$)/g;
+const FALLBACK_CHARACTER_LIMIT = 180;
+
+const isWhitespace = (character: string | undefined) =>
+  character !== undefined && /\s/.test(character);
+
+const trimTrailingPunctuation = (value: string) =>
+  value.replace(/[\-–—,:;]+$/u, "").trimEnd();
+
+const computeFallbackPreview = (text: string) => {
+  if (text.length <= FALLBACK_CHARACTER_LIMIT) {
+    return { preview: text, truncated: false } as const;
+  }
+
+  let endIndex = FALLBACK_CHARACTER_LIMIT;
+
+  while (endIndex > 0 && !isWhitespace(text[endIndex - 1])) {
+    endIndex -= 1;
+  }
+
+  if (endIndex === 0) {
+    endIndex = FALLBACK_CHARACTER_LIMIT;
+  }
+
+  let preview = text.slice(0, endIndex);
+
+  if (isWhitespace(text[endIndex])) {
+    preview = preview.trimEnd();
+  }
+
+  preview = trimTrailingPunctuation(preview);
+
+  if (!preview) {
+    preview = trimTrailingPunctuation(text.slice(0, FALLBACK_CHARACTER_LIMIT));
+  }
+
+  return {
+    preview,
+    truncated: true,
+  } as const;
+};
 
 const computePreview = (text: string, previewSentenceCount: number) => {
   if (previewSentenceCount <= 0) {
@@ -30,7 +70,7 @@ const computePreview = (text: string, previewSentenceCount: number) => {
   const truncated = endIndex < text.length;
 
   if (!truncated) {
-    return { preview: text, truncated: false };
+    return computeFallbackPreview(text);
   }
 
   // Include trailing whitespace up to the first newline to avoid clipping paragraphs awkwardly.
@@ -38,9 +78,12 @@ const computePreview = (text: string, previewSentenceCount: number) => {
     endIndex += 1;
   }
 
+  const previewText = text.slice(0, endIndex);
+  const fallbackResult = computeFallbackPreview(previewText);
+
   return {
-    preview: text.slice(0, endIndex),
-    truncated,
+    preview: fallbackResult.preview,
+    truncated: true,
   };
 };
 
