@@ -91,3 +91,13 @@ a {
     justify-items: end;
   }
 }
+
+@media (max-width: 640px) {
+  .responsive-table tbody {
+    gap: 0.75rem;
+  }
+
+  .responsive-table tr {
+    padding: 0.75rem;
+  }
+}
