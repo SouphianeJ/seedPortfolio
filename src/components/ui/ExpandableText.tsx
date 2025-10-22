@@ -9,6 +9,26 @@ interface ExpandableTextProps {
 }
 
 const SENTENCE_END_REGEX = /[.!?…]+(?=\s|$)/g;
+const FALLBACK_CHARACTER_LIMIT = 320;
+
+const computeFallbackPreview = (text: string) => {
+  if (text.length <= FALLBACK_CHARACTER_LIMIT) {
+    return { preview: text, truncated: false } as const;
+  }
+
+  let endIndex = FALLBACK_CHARACTER_LIMIT;
+
+  while (endIndex < text.length && !/[\s\n]/.test(text[endIndex])) {
+    endIndex += 1;
+  }
+
+  const preview = text.slice(0, endIndex).trimEnd();
+
+  return {
+    preview,
+    truncated: true,
+  } as const;
+};
 
 const computePreview = (text: string, previewSentenceCount: number) => {
   if (previewSentenceCount <= 0) {
@@ -30,7 +50,7 @@ const computePreview = (text: string, previewSentenceCount: number) => {
   const truncated = endIndex < text.length;
 
   if (!truncated) {
-    return { preview: text, truncated: false };
+    return computeFallbackPreview(text);
   }
 
   // Include trailing whitespace up to the first newline to avoid clipping paragraphs awkwardly.
