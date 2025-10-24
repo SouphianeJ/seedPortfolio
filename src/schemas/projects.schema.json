@@ -3,7 +3,11 @@
   "type": "object",
   "properties": {
     "projectName": { "type": "string", "title": "Nom du projet" },
-    "year": { "type": "integer", "title": "Année" },
+    "year": {
+      "type": "string",
+      "title": "Année(s)",
+      "description": "Indiquez une ou plusieurs années séparées par un point-virgule."
+    },
     "roles": {
       "type": "array",
       "title": "Rôles",

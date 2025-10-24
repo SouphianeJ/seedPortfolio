@@ -17,8 +17,8 @@
     "type": {
       "type": "string",
       "title": "Type de preuve",
-      "enum": ["image", "video", "texte"],
-      "enumNames": ["Image", "Vidéo", "Texte"]
+      "enum": ["image", "video", "texte", "file"],
+      "enumNames": ["Image", "Vidéo", "Texte", "Fichier"]
     }
   },
   "required": ["proofName", "link", "type"]

@@ -10,7 +10,7 @@ export type SkillCategory =
 export interface ProjectDoc {
   _id: ObjectId;
   projectName: string;
-  year: number;
+  year: number | number[];
   roles: ObjectId[];
   expertises?: ObjectId[];
   tools?: ObjectId[];
@@ -51,7 +51,7 @@ export interface ToolDoc {
   usage?: string;
 }
 
-export type ProofType = "image" | "video" | "texte";
+export type ProofType = "image" | "video" | "texte" | "file";
 
 export interface ProofDoc {
   _id: ObjectId;

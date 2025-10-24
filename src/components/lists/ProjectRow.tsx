@@ -32,7 +32,11 @@ export const ProjectRow = ({
       )}
     </td>
     <td className="px-2 py-3 text-slate-200 sm:px-4" data-label="Année">
-      {project.year}
+      {project.year ? (
+        project.year
+      ) : (
+        <span className="text-xs text-slate-400">Non renseigné</span>
+      )}
     </td>
     <td className="px-2 py-3 sm:px-4" data-label="Rôles">
       {roleNames.length > 0 ? (

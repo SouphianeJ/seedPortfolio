@@ -116,6 +116,99 @@ const parseFireFacts = (value: unknown, field: string): string[] => {
   return parsed;
 };
 
+const parseYearField = (
+  value: unknown,
+  field: string,
+  { required }: { required: boolean },
+): number | number[] | undefined => {
+  if (value == null || value === "") {
+    if (required) {
+      throw new BadRequestError(`Le champ ${field} est requis.`);
+    }
+    return undefined;
+  }
+
+  if (typeof value === "number") {
+    if (!Number.isInteger(value)) {
+      throw new BadRequestError(
+        `Le champ ${field} doit contenir des années entières (séparées par des points-virgules).`,
+      );
+    }
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    const joined = value
+      .map((entry) => {
+        if (typeof entry === "number") {
+          if (!Number.isInteger(entry)) {
+            throw new BadRequestError(
+              `Chaque valeur de ${field} doit être un entier séparé par un point-virgule.`,
+            );
+          }
+          return entry.toString();
+        }
+        if (typeof entry === "string") {
+          return entry;
+        }
+        throw new BadRequestError(
+          `Chaque valeur de ${field} doit être un entier séparé par un point-virgule.`,
+        );
+      })
+      .join(";");
+    return parseYearField(joined, field, { required });
+  }
+
+  if (typeof value === "string") {
+    const parts = value
+      .split(";")
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    if (parts.length === 0) {
+      if (required) {
+        throw new BadRequestError(`Le champ ${field} est requis.`);
+      }
+      return undefined;
+    }
+
+    const years: number[] = [];
+    const seen = new Set<number>();
+
+    parts.forEach((part) => {
+      const parsed = Number(part);
+      if (!Number.isInteger(parsed)) {
+        throw new BadRequestError(
+          `Chaque valeur de ${field} doit être un entier séparé par un point-virgule.`,
+        );
+      }
+      if (!seen.has(parsed)) {
+        seen.add(parsed);
+        years.push(parsed);
+      }
+    });
+
+    if (years.length === 0) {
+      if (required) {
+        throw new BadRequestError(`Le champ ${field} est requis.`);
+      }
+      return undefined;
+    }
+
+    years.sort((a, b) => b - a);
+
+    if (years.length === 1) {
+      return years[0];
+    }
+
+    return years;
+  }
+
+  throw new BadRequestError(
+    `Le champ ${field} doit être une chaîne ou un nombre entier (séparé par des points-virgules pour plusieurs entrées).`,
+  );
+};
+
 export const parseProjectCreate = async (
   body: Record<string, unknown>,
 ): Promise<CreateProjectPayload> => {
@@ -127,9 +220,9 @@ export const parseProjectCreate = async (
     throw new BadRequestError("Le nom du projet est requis.");
   }
 
-  const yearValue = Number(body.year);
-  if (!Number.isInteger(yearValue)) {
-    throw new BadRequestError("L'année doit être un entier.");
+  const year = parseYearField(body.year, "year", { required: true });
+  if (year == null) {
+    throw new BadRequestError("L'année est requise.");
   }
 
   const roles = await getRoleIdSet();
@@ -165,7 +258,7 @@ export const parseProjectCreate = async (
 
   return {
     projectName,
-    year: yearValue,
+    year,
     roles: parsedRoles,
     expertises: expertiseIds,
     tools: toolIds,
@@ -192,14 +285,11 @@ export const parseProjectUpdate = async (
   }
 
   if ("year" in body) {
-    if (body.year == null) {
+    const parsedYear = parseYearField(body.year, "year", { required: false });
+    if (parsedYear === undefined) {
       payload.year = undefined;
     } else {
-      const yearValue = Number(body.year);
-      if (!Number.isInteger(yearValue)) {
-        throw new BadRequestError("Le champ year doit être un entier.");
-      }
-      payload.year = yearValue;
+      payload.year = parsedYear;
     }
   }
 
