@@ -8,10 +8,48 @@ import { parseProjectCreate } from "@/lib/parsers/projects";
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
 
+const extractPrimaryYear = (year: unknown): number => {
+  if (Array.isArray(year)) {
+    const numericValues = year
+      .map((entry) => {
+        if (typeof entry === "number" && Number.isInteger(entry)) {
+          return entry;
+        }
+        if (typeof entry === "string") {
+          const parsed = Number(entry.trim());
+          return Number.isInteger(parsed) ? parsed : undefined;
+        }
+        return undefined;
+      })
+      .filter((entry): entry is number => entry != null);
+
+    if (numericValues.length === 0) {
+      return Number.NEGATIVE_INFINITY;
+    }
+    return Math.max(...numericValues);
+  }
+  if (typeof year === "number" && Number.isInteger(year)) {
+    return year;
+  }
+  if (typeof year === "string") {
+    const parts = year
+      .split(";")
+      .map((part) => Number(part.trim()))
+      .filter((value) => Number.isInteger(value));
+
+    if (parts.length === 0) {
+      return Number.NEGATIVE_INFINITY;
+    }
+    return Math.max(...parts);
+  }
+  return Number.NEGATIVE_INFINITY;
+};
+
 export async function GET() {
   try {
     const collection = await projects();
-    const data = await collection.find().sort({ year: -1 }).toArray();
+    const data = await collection.find().toArray();
+    data.sort((a, b) => extractPrimaryYear(b.year) - extractPrimaryYear(a.year));
     return NextResponse.json(data.map(serializeProject));
   } catch (error) {
     console.error(error);

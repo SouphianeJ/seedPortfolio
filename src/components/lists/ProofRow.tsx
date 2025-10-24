@@ -13,12 +13,17 @@ const typeLabelMap: Record<SerializedProof["type"], string> = {
   image: "Image",
   video: "Vidéo",
   texte: "Texte",
+  file: "Fichier",
 };
 
-const typeColorMap: Record<SerializedProof["type"], "sky" | "emerald" | "violet"> = {
+const typeColorMap: Record<
+  SerializedProof["type"],
+  "sky" | "emerald" | "violet" | "slate"
+> = {
   image: "sky",
   video: "emerald",
   texte: "violet",
+  file: "slate",
 };
 
 export const ProofRow = ({ proof }: ProofRowProps) => (

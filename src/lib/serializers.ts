@@ -20,18 +20,59 @@ const withStringId = <T extends { _id: ObjectId }>(
 
 export type SerializedProject = Omit<
   WithStringId<ProjectDoc>,
-  "roles" | "expertises" | "tools"
+  "roles" | "expertises" | "tools" | "year"
 > & {
   roles: string[];
   expertises?: string[];
   tools: string[];
   fireFacts: string[];
+  year: string;
 };
 
 export const serializeProject = (project: ProjectDoc): SerializedProject => {
-  const base = withStringId(project);
+  const { year: _ignoredYear, ...rest } = withStringId(project);
+  void _ignoredYear;
+  const formatYear = (value: unknown): string => {
+    if (Array.isArray(value)) {
+      const numbers = value
+        .map((entry) => {
+          if (typeof entry === "number") {
+            return entry;
+          }
+          if (typeof entry === "string") {
+            const parsed = Number(entry.trim());
+            return Number.isInteger(parsed) ? parsed : undefined;
+          }
+          return undefined;
+        })
+        .filter((entry): entry is number => entry != null);
+
+      if (numbers.length === 0) {
+        return "";
+      }
+
+      const unique = Array.from(new Set(numbers)).sort((a, b) => b - a);
+      return unique.map((entry) => entry.toString()).join(" ; ");
+    }
+    if (typeof value === "number") {
+      return value.toString();
+    }
+    if (typeof value === "string") {
+      const parts = value
+        .split(";")
+        .map((part) => part.trim())
+        .filter(Boolean);
+      if (parts.length === 0) {
+        return "";
+      }
+      const unique = Array.from(new Set(parts));
+      return unique.join(" ; ");
+    }
+    return "";
+  };
   return {
-    ...base,
+    ...rest,
+    year: formatYear(project.year),
     roles: project.roles?.map((roleId) => roleId.toString()) ?? [],
     isKeyProjet: project.isKeyProjet ?? false,
     expertises: project.expertises?.map((expertiseId) => expertiseId.toString()),
