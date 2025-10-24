@@ -51,6 +51,16 @@ export interface ToolDoc {
   usage?: string;
 }
 
+export type ProofType = "image" | "video" | "texte";
+
+export interface ProofDoc {
+  _id: ObjectId;
+  proofName: string;
+  description?: string;
+  link: string;
+  type: ProofType;
+}
+
 export type CreateProjectPayload = Pick<
   ProjectDoc,
   | "projectName"
@@ -86,5 +96,12 @@ export type CreateToolPayload = Pick<
 >;
 
 export type UpdateToolPayload = Partial<CreateToolPayload>;
+
+export type CreateProofPayload = Pick<
+  ProofDoc,
+  "proofName" | "description" | "link" | "type"
+>;
+
+export type UpdateProofPayload = Partial<CreateProofPayload>;
 
 export type WithStringId<T> = Omit<T, "_id"> & { _id: string };

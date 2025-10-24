@@ -1,0 +1,25 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    { "type": "Control", "scope": "#/properties/proofName" },
+    {
+      "type": "Control",
+      "scope": "#/properties/type",
+      "options": {
+        "format": "radio"
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/link",
+      "options": {
+        "placeholder": "https://..."
+      }
+    },
+    {
+      "type": "Control",
+      "scope": "#/properties/description",
+      "options": { "multi": true }
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 
 const NAV_ITEMS = [
   { href: "/admin/projects", label: "Projets" },
+  { href: "/admin/proofs", label: "Preuves" },
   { href: "/admin/expertises", label: "Expertises" },
   { href: "/admin/jobs", label: "Postes" },
   { href: "/admin/tools", label: "Outils" },
@@ -20,7 +21,7 @@ export default function AdminLayout({
           <div className="flex flex-col gap-1">
             <h1 className="text-3xl font-semibold text-slate-100">Seed Portfolio Admin</h1>
             <p className="text-sm text-slate-300">
-              Gérez les projets, expertises, postes et outils pour alimenter votre base MongoDB.
+              Gérez les projets, preuves, expertises, postes et outils pour alimenter votre base MongoDB.
             </p>
           </div>
           <nav className="mt-6 flex flex-wrap gap-3 text-sm">
