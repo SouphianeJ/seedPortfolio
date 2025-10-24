@@ -3,6 +3,7 @@ import type {
   ExpertiseDoc,
   JobPositionDoc,
   ProjectDoc,
+  ProofDoc,
   ToolDoc,
   WithStringId,
 } from "@/lib/types";
@@ -69,3 +70,8 @@ export const serializeJobPosition = (job: JobPositionDoc): SerializedJobPosition
 
 export const serializeTool = (tool: ToolDoc): WithStringId<ToolDoc> =>
   withStringId(tool);
+
+export type SerializedProof = WithStringId<ProofDoc>;
+
+export const serializeProof = (proof: ProofDoc): SerializedProof =>
+  withStringId(proof);

@@ -3,6 +3,7 @@ import type {
   ExpertiseDoc,
   JobPositionDoc,
   ProjectDoc,
+  ProofDoc,
   ToolDoc,
 } from "./types";
 
@@ -65,4 +66,9 @@ export const jobpositions = async (): Promise<Collection<JobPositionDoc>> => {
 export const tools = async (): Promise<Collection<ToolDoc>> => {
   const db = await getDb();
   return db.collection<ToolDoc>("tools");
+};
+
+export const proofs = async (): Promise<Collection<ProofDoc>> => {
+  const db = await getDb();
+  return db.collection<ProofDoc>("proofs");
 };

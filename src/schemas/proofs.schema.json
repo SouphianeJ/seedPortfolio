@@ -1,0 +1,25 @@
+{
+  "$id": "ProofsSchema",
+  "type": "object",
+  "properties": {
+    "proofName": { "type": "string", "title": "Nom de la preuve" },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Ajoutez un contexte ou des détails sur cette preuve."
+    },
+    "link": {
+      "type": "string",
+      "title": "Lien",
+      "format": "uri",
+      "description": "URL vers le dépôt, la ressource ou la capture associée."
+    },
+    "type": {
+      "type": "string",
+      "title": "Type de preuve",
+      "enum": ["image", "video", "texte"],
+      "enumNames": ["Image", "Vidéo", "Texte"]
+    }
+  },
+  "required": ["proofName", "link", "type"]
+}
