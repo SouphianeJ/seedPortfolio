@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import Badge from "@/components/ui/Badge";
 import ExpandableText from "@/components/ui/ExpandableText";
+import YearPill from "@/components/ui/YearPill";
 import { useLinkPreview } from "@/hooks/useLinkPreview";
 import { proofTypeBadgeColors, proofTypeLabels } from "@/lib/proofMeta";
 import type { SerializedProject, SerializedProof } from "@/lib/serializers";
@@ -316,7 +317,7 @@ const MobileRow = ({
       )}
     </td>
     <td className="px-2 py-3 text-slate-200 sm:px-4" data-label="Année">
-      {project.year ? project.year : <EmptyValue />}
+      {project.year ? <YearPill value={project.year} /> : <EmptyValue />}
     </td>
     <td className="px-2 py-3 sm:px-4" data-label="Rôles">
       <BadgeList items={roleNames} color="sky" />
@@ -381,7 +382,11 @@ const DesktopRow = ({
         <div className="mt-6 grid gap-6">
           <div className="grid gap-6 lg:grid-cols-3">
             <Section title="Année">
-              {project.year ? project.year : <EmptyValue />}
+              {project.year ? (
+                <YearPill value={project.year} />
+              ) : (
+                <EmptyValue />
+              )}
             </Section>
             <Section title="Rôles">
               <BadgeList items={roleNames} color="sky" />
@@ -403,7 +408,10 @@ const DesktopRow = ({
             </Section>
           </div>
 
-          <Section title="Preuves détaillées" className="space-y-4">
+          <Section
+            title="Preuves détaillées"
+            className="hidden lg:block lg:space-y-4"
+          >
             <ProofSummaryList proofs={proofs} />
           </Section>
         </div>
