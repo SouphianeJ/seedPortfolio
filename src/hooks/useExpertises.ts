@@ -2,6 +2,7 @@
 
 import useSWR, { mutate } from "swr";
 import { fetcher, jsonFetch } from "@/lib/fetcher";
+import { useAuthRedirect } from "./useAuthRedirect";
 import type {
   CreateExpertisePayload,
   ExpertiseDoc,
@@ -16,20 +17,24 @@ export const useExpertises = () => {
     COLLECTION_KEY,
     fetcher,
   );
+  const authError = useAuthRedirect(error);
 
   return {
     expertises: data ?? [],
     error,
     isLoading,
+    authError,
   };
 };
 
 export const useExpertise = (id: string | null) => {
   const shouldFetch = Boolean(id);
-  return useSWR<WithStringId<ExpertiseDoc>>(
+  const response = useSWR<WithStringId<ExpertiseDoc>>(
     shouldFetch ? `${COLLECTION_KEY}/${id}` : null,
     fetcher,
   );
+  const authError = useAuthRedirect(response.error);
+  return { ...response, authError };
 };
 
 export const createExpertise = async (payload: CreateExpertisePayload) => {

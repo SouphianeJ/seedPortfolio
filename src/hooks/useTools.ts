@@ -2,6 +2,7 @@
 
 import useSWR, { mutate } from "swr";
 import { fetcher, jsonFetch } from "@/lib/fetcher";
+import { useAuthRedirect } from "./useAuthRedirect";
 import type { CreateToolPayload, ToolDoc, UpdateToolPayload, WithStringId } from "@/lib/types";
 
 const COLLECTION_KEY = "/api/tools";
@@ -11,20 +12,24 @@ export const useTools = () => {
     COLLECTION_KEY,
     fetcher,
   );
+  const authError = useAuthRedirect(error);
 
   return {
     tools: data ?? [],
     error,
     isLoading,
+    authError,
   };
 };
 
 export const useTool = (id: string | null) => {
   const shouldFetch = Boolean(id);
-  return useSWR<WithStringId<ToolDoc>>(
+  const response = useSWR<WithStringId<ToolDoc>>(
     shouldFetch ? `${COLLECTION_KEY}/${id}` : null,
     fetcher,
   );
+  const authError = useAuthRedirect(response.error);
+  return { ...response, authError };
 };
 
 export const createTool = async (payload: CreateToolPayload) => {

@@ -2,6 +2,7 @@
 
 import useSWR, { mutate } from "swr";
 import { fetcher, jsonFetch } from "@/lib/fetcher";
+import { useAuthRedirect } from "./useAuthRedirect";
 import type { CreateProjectPayload, UpdateProjectPayload } from "@/lib/types";
 import type { SerializedProject } from "@/lib/serializers";
 
@@ -12,20 +13,24 @@ export const useProjects = () => {
     COLLECTION_KEY,
     fetcher,
   );
+  const authError = useAuthRedirect(error);
 
   return {
     projects: data ?? [],
     error,
     isLoading,
+    authError,
   };
 };
 
 export const useProject = (id: string | null) => {
   const shouldFetch = Boolean(id);
-  return useSWR<SerializedProject>(
+  const response = useSWR<SerializedProject>(
     shouldFetch ? `${COLLECTION_KEY}/${id}` : null,
     fetcher,
   );
+  const authError = useAuthRedirect(response.error);
+  return { ...response, authError };
 };
 
 export const createProject = async (payload: CreateProjectPayload) => {

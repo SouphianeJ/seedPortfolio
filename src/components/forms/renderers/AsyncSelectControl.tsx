@@ -9,6 +9,7 @@ import type {
   RankedTester,
 } from "@jsonforms/core";
 import { withJsonFormsControlProps } from "@jsonforms/react";
+import { withAuth } from "@/lib/fetcher";
 import {
   AsyncOptionsConfig,
   baseSelectClass,
@@ -52,7 +53,7 @@ const useAsyncOptions = (config: AsyncOptionsConfig | undefined) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(config.url, { signal: controller.signal });
+        const response = await fetch(config.url, withAuth({ signal: controller.signal }));
         if (!response.ok) {
           throw new Error(response.statusText);
         }
