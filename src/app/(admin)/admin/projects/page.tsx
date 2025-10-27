@@ -10,6 +10,7 @@ import { useProjects } from "@/hooks/useProjects";
 import { useExpertises } from "@/hooks/useExpertises";
 import { useTools } from "@/hooks/useTools";
 import { useJobs } from "@/hooks/useJobs";
+import { useProofs } from "@/hooks/useProofs";
 
 const buttonClasses =
   "inline-flex items-center rounded-md border border-sky-500 bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400";
@@ -27,6 +28,11 @@ export default function ProjectsPage() {
     error: expertisesError,
   } = useExpertises();
   const { tools, isLoading: toolsLoading, error: toolsError } = useTools();
+  const {
+    proofs,
+    isLoading: proofsLoading,
+    error: proofsError,
+  } = useProofs();
 
   const expertiseMap = useMemo(() => {
     const map = new Map<string, string>();
@@ -52,9 +58,26 @@ export default function ProjectsPage() {
     return map;
   }, [jobs]);
 
+  const proofMap = useMemo(() => {
+    const map = new Map<string, (typeof proofs)[number]>();
+    proofs.forEach((proof) => {
+      map.set(proof._id, proof);
+    });
+    return map;
+  }, [proofs]);
+
   const isLoading =
-    projectsLoading || expertisesLoading || toolsLoading || jobsLoading;
-  const error = projectsError ?? expertisesError ?? toolsError ?? jobsError;
+    projectsLoading ||
+    expertisesLoading ||
+    toolsLoading ||
+    jobsLoading ||
+    proofsLoading;
+  const error =
+    projectsError ??
+    expertisesError ??
+    toolsError ??
+    jobsError ??
+    proofsError;
 
   return (
     <div className="space-y-6">
@@ -107,6 +130,7 @@ export default function ProjectsPage() {
             "Expertises",
             "Outils",
             "Top Facts & Figures",
+            "Preuves",
             "Actions",
           ]}
         >
@@ -117,6 +141,9 @@ export default function ProjectsPage() {
             const toolNames = (project.tools ?? [])
               .map((toolId) => toolMap.get(toolId))
               .filter((name): name is string => Boolean(name));
+            const projectProofs = (project.proofs ?? [])
+              .map((proofId) => proofMap.get(proofId))
+              .filter((proof): proof is NonNullable<typeof proof> => Boolean(proof));
 
             return (
               <ProjectRow
@@ -127,6 +154,7 @@ export default function ProjectsPage() {
                 )}
                 expertiseNames={expertiseNames}
                 toolNames={toolNames}
+                proofs={projectProofs}
               />
             );
           })}

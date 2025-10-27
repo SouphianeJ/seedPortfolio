@@ -3,13 +3,15 @@
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import ExpandableText from "@/components/ui/ExpandableText";
-import type { SerializedProject } from "@/lib/serializers";
+import ProjectProofEmbeds from "@/components/proofs/ProjectProofEmbeds";
+import type { SerializedProject, SerializedProof } from "@/lib/serializers";
 
 interface ProjectRowProps {
   project: SerializedProject;
   roleNames?: string[];
   expertiseNames?: string[];
   toolNames?: string[];
+  proofs?: SerializedProof[];
 }
 
 export const ProjectRow = ({
@@ -17,6 +19,7 @@ export const ProjectRow = ({
   roleNames = [],
   expertiseNames = [],
   toolNames = [],
+  proofs = [],
 }: ProjectRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
     <td className="px-2 py-3 sm:px-4" data-label="Nom">
@@ -90,6 +93,9 @@ export const ProjectRow = ({
       ) : (
         <span className="text-xs text-slate-400">Non renseigné</span>
       )}
+    </td>
+    <td className="px-2 py-3 sm:px-4" data-label="Preuves">
+      {proofs.length > 0 && <ProjectProofEmbeds proofs={proofs} />}
     </td>
     <td className="px-2 py-3 text-right sm:px-4" data-label="Actions" data-align="end">
       <Link
