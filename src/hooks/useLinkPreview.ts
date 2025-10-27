@@ -40,12 +40,32 @@ export const useLinkPreview = (url: string | null | undefined): LinkPreviewResul
           `/api/unfurl?url=${encodeURIComponent(url)}`,
           withAuth({ signal: controller.signal }),
         );
-        if (!response.ok) {
-          throw new Error(response.statusText || "Impossible de charger l'aperçu");
+        let payload: unknown = null;
+        try {
+          payload = await response.json();
+        } catch {
+          payload = null;
         }
-        const payload = (await response.json()) as LinkPreviewData;
+
+        if (!response.ok) {
+          const message =
+            (payload &&
+            typeof payload === "object" &&
+            payload !== null &&
+            "error" in payload &&
+            typeof (payload as { error?: unknown }).error === "string"
+              ? (payload as { error: string }).error
+              : response.statusText) || "Impossible de charger l'aperçu";
+          throw new Error(message);
+        }
+
+        const dataPayload = payload as LinkPreviewData | null;
+        if (!dataPayload) {
+          throw new Error("Impossible de charger l'aperçu");
+        }
+
         if (!cancelled) {
-          setData(payload);
+          setData(dataPayload);
         }
       } catch (err) {
         if (!cancelled) {
