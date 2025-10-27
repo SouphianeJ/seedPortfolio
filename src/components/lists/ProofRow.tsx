@@ -14,18 +14,16 @@ const typeLabelMap: Record<SerializedProof["type"], string> = {
   video: "Vidéo",
   texte: "Texte",
   file: "Fichier",
-  "Site URL": "Site URL",
 };
 
 const typeColorMap: Record<
   SerializedProof["type"],
-  "sky" | "emerald" | "violet" | "slate" | "gold"
+  "sky" | "emerald" | "violet" | "slate"
 > = {
   image: "sky",
   video: "emerald",
   texte: "violet",
   file: "slate",
-  "Site URL": "gold",
 };
 
 export const ProofRow = ({ proof }: ProofRowProps) => (
