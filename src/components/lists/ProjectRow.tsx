@@ -332,7 +332,7 @@ const MobileRow = ({
       <FireFactsList facts={project.fireFacts} />
     </td>
     <td className="px-2 py-3 sm:px-4" data-label="Preuves">
-      <ProofCompactList proofs={proofs} />
+      <ProofSummaryList proofs={proofs} />
     </td>
     <td className="px-2 py-3 text-right sm:px-4" data-label="Actions" data-align="end">
       <Link
@@ -408,10 +408,7 @@ const DesktopRow = ({
             </Section>
           </div>
 
-          <Section
-            title="Preuves détaillées"
-            className="hidden lg:block lg:space-y-4"
-          >
+          <Section title="Preuves détaillées" className="space-y-4">
             <ProofSummaryList proofs={proofs} />
           </Section>
         </div>
