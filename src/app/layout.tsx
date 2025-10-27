@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,8 +13,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headerList = headers();
+  const nonce = headerList.get("x-nonce") ?? undefined;
+
   return (
     <html lang="fr">
+      <head>
+        <style nonce={nonce}>{":root { color-scheme: dark; }"}</style>
+      </head>
       <body className="bg-slate-950 text-slate-100 antialiased">
         {children}
       </body>
