@@ -3,6 +3,7 @@ import { expertises } from "@/lib/mongodb";
 import { serializeExpertise } from "@/lib/serializers";
 import { isValidObjectId, toObjectId } from "@/lib/ids";
 import { BadRequestError, parseExpertiseUpdate } from "../validators";
+import { guardAdminRequest } from "@/lib/auth/api";
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
 
@@ -10,6 +11,11 @@ export async function GET(
   _request: Request,
   context: RouteContext<"/api/expertises/[id]">,
 ) {
+  const guardResponse = await guardAdminRequest();
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   const { id } = await context.params;
 
   if (!isValidObjectId(id)) {
@@ -35,6 +41,11 @@ export async function PUT(
   request: Request,
   context: RouteContext<"/api/expertises/[id]">,
 ) {
+  const guardResponse = await guardAdminRequest();
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   const { id } = await context.params;
 
   if (!isValidObjectId(id)) {

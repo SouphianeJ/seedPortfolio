@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { guardAdminRequest } from "@/lib/auth/api";
 import { projects } from "@/lib/mongodb";
 import { serializeProject } from "@/lib/serializers";
 import { createObjectId } from "@/lib/ids";
@@ -46,6 +47,11 @@ const extractPrimaryYear = (year: unknown): number => {
 };
 
 export async function GET() {
+  const guardResponse = await guardAdminRequest();
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   try {
     const collection = await projects();
     const data = await collection.find().toArray();
@@ -58,6 +64,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const guardResponse = await guardAdminRequest();
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const payload = await parseProjectCreate(body);

@@ -4,6 +4,7 @@ import { serializeProof } from "@/lib/serializers";
 import { isValidObjectId, toObjectId } from "@/lib/ids";
 import { BadRequestError } from "@/lib/parsers/objectid";
 import { parseProofUpdate } from "@/lib/parsers/proofs";
+import { guardAdminRequest } from "@/lib/auth/api";
 
 const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
@@ -12,6 +13,11 @@ export async function GET(
   _request: Request,
   context: RouteContext<"/api/proofs/[id]">,
 ) {
+  const guardResponse = await guardAdminRequest();
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   const { id } = await context.params;
 
   if (!isValidObjectId(id)) {
@@ -37,6 +43,11 @@ export async function PUT(
   request: Request,
   context: RouteContext<"/api/proofs/[id]">,
 ) {
+  const guardResponse = await guardAdminRequest();
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   const { id } = await context.params;
 
   if (!isValidObjectId(id)) {
