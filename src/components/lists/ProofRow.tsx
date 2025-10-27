@@ -3,28 +3,12 @@
 import Link from "next/link";
 import Badge from "@/components/ui/Badge";
 import ExpandableText from "@/components/ui/ExpandableText";
+import { proofTypeBadgeColors, proofTypeLabels } from "@/lib/proofMeta";
 import type { SerializedProof } from "@/lib/serializers";
 
 interface ProofRowProps {
   proof: SerializedProof;
 }
-
-const typeLabelMap: Record<SerializedProof["type"], string> = {
-  image: "Image",
-  video: "Vidéo",
-  texte: "Texte",
-  file: "Fichier",
-};
-
-const typeColorMap: Record<
-  SerializedProof["type"],
-  "sky" | "emerald" | "violet" | "slate"
-> = {
-  image: "sky",
-  video: "emerald",
-  texte: "violet",
-  file: "slate",
-};
 
 export const ProofRow = ({ proof }: ProofRowProps) => (
   <tr className="transition hover:bg-slate-800/40">
@@ -38,7 +22,9 @@ export const ProofRow = ({ proof }: ProofRowProps) => (
       )}
     </td>
     <td className="px-2 py-3 sm:px-4" data-label="Type">
-      <Badge color={typeColorMap[proof.type]}>{typeLabelMap[proof.type]}</Badge>
+      <Badge color={proofTypeBadgeColors[proof.type]}>
+        {proofTypeLabels[proof.type]}
+      </Badge>
     </td>
     <td className="px-2 py-3 sm:px-4" data-label="Lien">
       <a

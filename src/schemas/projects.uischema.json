@@ -40,6 +40,17 @@
             }
           }
         },
+        {
+          "type": "Control",
+          "scope": "#/properties/proofs",
+          "options": {
+            "asyncOptions": {
+              "url": "/api/proofs",
+              "valuePath": "_id",
+              "labelPath": "proofName"
+            }
+          }
+        },
         { "type": "Control", "scope": "#/properties/isKeyProjet" }
       ]
     },
