@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { withAuth } from "@/lib/fetcher";
 
 interface LinkPreviewData {
   url: string;
@@ -35,9 +36,10 @@ export const useLinkPreview = (url: string | null | undefined): LinkPreviewResul
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/unfurl?url=${encodeURIComponent(url)}`, {
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `/api/unfurl?url=${encodeURIComponent(url)}`,
+          withAuth({ signal: controller.signal }),
+        );
         if (!response.ok) {
           throw new Error(response.statusText || "Impossible de charger l'aperçu");
         }

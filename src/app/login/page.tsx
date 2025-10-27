@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
+import { withAuth } from "@/lib/fetcher";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,11 +41,14 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ identifier, password, remember }),
-      });
+      const response = await fetch(
+        "/api/auth/login",
+        withAuth({
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ identifier, password, remember }),
+        }),
+      );
 
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as { error?: string } | null;

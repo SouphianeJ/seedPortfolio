@@ -2,6 +2,7 @@
 
 import useSWR, { mutate } from "swr";
 import { fetcher, jsonFetch } from "@/lib/fetcher";
+import { useAuthRedirect } from "./useAuthRedirect";
 import type { CreateProofPayload, UpdateProofPayload } from "@/lib/types";
 import type { SerializedProof } from "@/lib/serializers";
 
@@ -12,20 +13,24 @@ export const useProofs = () => {
     COLLECTION_KEY,
     fetcher,
   );
+  const authError = useAuthRedirect(error);
 
   return {
     proofs: data ?? [],
     error,
     isLoading,
+    authError,
   };
 };
 
 export const useProof = (id: string | null) => {
   const shouldFetch = Boolean(id);
-  return useSWR<SerializedProof>(
+  const response = useSWR<SerializedProof>(
     shouldFetch ? `${COLLECTION_KEY}/${id}` : null,
     fetcher,
   );
+  const authError = useAuthRedirect(response.error);
+  return { ...response, authError };
 };
 
 export const createProof = async (payload: CreateProofPayload) => {

@@ -2,6 +2,7 @@
 
 import useSWR, { mutate } from "swr";
 import { fetcher, jsonFetch } from "@/lib/fetcher";
+import { useAuthRedirect } from "./useAuthRedirect";
 import type {
   CreateJobPositionPayload,
   JobPositionDoc,
@@ -16,20 +17,24 @@ export const useJobs = () => {
     COLLECTION_KEY,
     fetcher,
   );
+  const authError = useAuthRedirect(error);
 
   return {
     jobs: data ?? [],
     error,
     isLoading,
+    authError,
   };
 };
 
 export const useJob = (id: string | null) => {
   const shouldFetch = Boolean(id);
-  return useSWR<WithStringId<JobPositionDoc>>(
+  const response = useSWR<WithStringId<JobPositionDoc>>(
     shouldFetch ? `${COLLECTION_KEY}/${id}` : null,
     fetcher,
   );
+  const authError = useAuthRedirect(response.error);
+  return { ...response, authError };
 };
 
 export const createJob = async (payload: CreateJobPositionPayload) => {

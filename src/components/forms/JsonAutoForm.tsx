@@ -5,6 +5,8 @@ import { JsonForms } from "@jsonforms/react";
 import type { JsonSchema, UISchemaElement } from "@jsonforms/core";
 import SubmitBar from "./SubmitBar";
 import { formRenderers } from "./renderers";
+import { AuthError } from "@/lib/fetcher";
+import { buildLoginUrl } from "@/hooks/useAuthRedirect";
 
 interface JsonAutoFormProps {
   schema: JsonSchema;
@@ -46,6 +48,13 @@ export const JsonAutoForm = ({
       await onSubmit(formData);
     } catch (error) {
       console.error(error);
+      if (error instanceof AuthError) {
+        setFormError("Votre session a expiré. Veuillez vous reconnecter.");
+        if (typeof window !== "undefined") {
+          window.location.replace(buildLoginUrl());
+        }
+        return;
+      }
       setFormError(
         error instanceof Error ? error.message : "Une erreur inattendue est survenue.",
       );
