@@ -14,7 +14,6 @@ export interface ProjectDoc {
   roles: ObjectId[];
   expertises?: ObjectId[];
   tools?: ObjectId[];
-  proofs?: ObjectId[];
   thumbnailPic?: string;
   shortDescription?: string;
   isKeyProjet?: boolean;
@@ -52,7 +51,7 @@ export interface ToolDoc {
   usage?: string;
 }
 
-export type ProofType = "image" | "video" | "texte" | "file" | "Site URL";
+export type ProofType = "image" | "video" | "texte" | "file";
 
 export interface ProofDoc {
   _id: ObjectId;
@@ -69,7 +68,6 @@ export type CreateProjectPayload = Pick<
   | "roles"
   | "expertises"
   | "tools"
-  | "proofs"
   | "thumbnailPic"
   | "shortDescription"
   | "isKeyProjet"

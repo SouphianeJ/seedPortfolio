@@ -5,7 +5,7 @@ import type {
 } from "@/lib/types";
 import { BadRequestError } from "@/lib/parsers/objectid";
 
-const allowedTypes: ProofType[] = ["image", "video", "texte", "file", "Site URL"];
+const allowedTypes: ProofType[] = ["image", "video", "texte", "file"];
 
 const getRequiredString = (value: unknown, field: string): string => {
   if (typeof value !== "string") {

@@ -1,10 +1,5 @@
 import { ObjectId } from "mongodb";
-import {
-  expertises,
-  jobpositions,
-  proofs as proofsCollection,
-  tools as toolsCollection,
-} from "@/lib/mongodb";
+import { expertises, jobpositions, tools as toolsCollection } from "@/lib/mongodb";
 import type { CreateProjectPayload, UpdateProjectPayload } from "@/lib/types";
 import { BadRequestError, toObjectIdArray } from "@/lib/parsers/objectid";
 import { toObjectId } from "@/lib/ids";
@@ -87,20 +82,6 @@ const assertToolsExist = async (ids: ObjectId[] | undefined, field: string) => {
   if (count !== ids.length) {
     throw new BadRequestError(
       `Certains outils référencés dans ${field} n'existent pas en base.`,
-    );
-  }
-};
-
-const assertProofsExist = async (ids: ObjectId[] | undefined, field: string) => {
-  if (!ids?.length) {
-    return;
-  }
-
-  const collection = await proofsCollection();
-  const count = await collection.countDocuments({ _id: { $in: ids } });
-  if (count !== ids.length) {
-    throw new BadRequestError(
-      `Certaines preuves référencées dans ${field} n'existent pas en base.`,
     );
   }
 };
@@ -266,10 +247,6 @@ export const parseProjectCreate = async (
     body.tools != null ? toObjectIdArray(body.tools, "tools") : undefined;
   await assertToolsExist(toolIds, "tools");
 
-  const proofIds =
-    body.proofs != null ? toObjectIdArray(body.proofs, "proofs") : undefined;
-  await assertProofsExist(proofIds, "proofs");
-
   let isKeyProjet = false;
   if ("isKeyProjet" in body) {
     if (typeof body.isKeyProjet === "boolean") {
@@ -285,7 +262,6 @@ export const parseProjectCreate = async (
     roles: parsedRoles,
     expertises: expertiseIds,
     tools: toolIds,
-    proofs: proofIds,
     thumbnailPic,
     shortDescription,
     isKeyProjet,
@@ -347,16 +323,6 @@ export const parseProjectUpdate = async (
       const toolIds = toObjectIdArray(body.tools, "tools");
       await assertToolsExist(toolIds, "tools");
       payload.tools = toolIds;
-    }
-  }
-
-  if ("proofs" in body) {
-    if (body.proofs == null) {
-      payload.proofs = [];
-    } else {
-      const proofIds = toObjectIdArray(body.proofs, "proofs");
-      await assertProofsExist(proofIds, "proofs");
-      payload.proofs = proofIds;
     }
   }
 
