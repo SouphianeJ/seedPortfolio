@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   description: "Interface d'administration pour projets, expertises et postes.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headerList = headers();
+  const headerList = await headers();
   const nonce = headerList.get("x-nonce") ?? undefined;
 
   return (
