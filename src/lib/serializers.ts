@@ -20,18 +20,30 @@ const withStringId = <T extends { _id: ObjectId }>(
 
 export type SerializedProject = Omit<
   WithStringId<ProjectDoc>,
-  "roles" | "expertises" | "tools" | "year"
+  "roles" | "expertises" | "tools" | "proofs" | "year"
 > & {
   roles: string[];
   expertises?: string[];
   tools: string[];
+  proofs: string[];
   fireFacts: string[];
   year: string;
 };
 
 export const serializeProject = (project: ProjectDoc): SerializedProject => {
-  const { year: _ignoredYear, ...rest } = withStringId(project);
+  const {
+    year: _ignoredYear,
+    roles: _ignoredRoles,
+    expertises: _ignoredExpertises,
+    tools: _ignoredTools,
+    proofs: _ignoredProofs,
+    ...rest
+  } = withStringId(project);
   void _ignoredYear;
+  void _ignoredRoles;
+  void _ignoredExpertises;
+  void _ignoredTools;
+  void _ignoredProofs;
   const formatYear = (value: unknown): string => {
     if (Array.isArray(value)) {
       const numbers = value
@@ -77,6 +89,7 @@ export const serializeProject = (project: ProjectDoc): SerializedProject => {
     isKeyProjet: project.isKeyProjet ?? false,
     expertises: project.expertises?.map((expertiseId) => expertiseId.toString()),
     tools: project.tools?.map((toolId) => toolId.toString()) ?? [],
+    proofs: project.proofs?.map((proofId) => proofId.toString()) ?? [],
     fireFacts: project.fireFacts ?? [],
   };
 };
