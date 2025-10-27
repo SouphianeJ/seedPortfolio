@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { guardAdminRequest } from "@/lib/auth/api";
 import { jobpositions } from "@/lib/mongodb";
 import { serializeJobPosition } from "@/lib/serializers";
 import { createObjectId } from "@/lib/ids";
@@ -9,6 +10,11 @@ const errorResponse = (message: string, status: number) =>
   NextResponse.json({ error: message }, { status });
 
 export async function GET() {
+  const guardResponse = await guardAdminRequest();
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   try {
     const collection = await jobpositions();
     const data = await collection.find().sort({ _id: -1 }).toArray();
@@ -20,6 +26,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const guardResponse = await guardAdminRequest();
+  if (guardResponse) {
+    return guardResponse;
+  }
+
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const payload = await parseJobPositionCreate(body);
